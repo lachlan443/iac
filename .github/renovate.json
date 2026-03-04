@@ -25,14 +25,6 @@
       "groupName": "linuxserver images"
     },
     {
-      "description": "Auto-merge linuxserver minor build bumps (ls suffix)",
-      "matchDatasources": ["docker"],
-      "matchPackageNames": ["/lscr\\.io\\/linuxserver\\/.*/"],
-      "matchUpdateTypes": ["patch"],
-      "automerge": true,
-      "automergeType": "branch"
-    },
-    {
       "description": "Auto-merge GitHub Actions minor/patch/digest as branch",
       "matchManagers": ["github-actions"],
       "matchUpdateTypes": ["minor", "patch", "digest"],
