@@ -6,12 +6,15 @@
   "timezone": "Australia/Sydney",
   "schedule": ["before 6am on monday"],
   "labels": ["renovate"],
-  "docker-compose": {
-    "fileMatch": ["docker/compose\\.yaml$"]
-  },
   "packageRules": [
     {
-      "description": "Auto-merge patch updates for trusted linuxserver images",
+      "description": "Group linuxserver image updates together",
+      "matchDatasources": ["docker"],
+      "matchPackagePatterns": ["lscr.io/linuxserver/.*"],
+      "groupName": "linuxserver images"
+    },
+    {
+      "description": "Auto-merge linuxserver minor build bumps (ls suffix)",
       "matchDatasources": ["docker"],
       "matchPackagePatterns": ["lscr.io/linuxserver/.*"],
       "matchUpdateTypes": ["patch"],
@@ -19,10 +22,32 @@
       "automergeType": "pr"
     },
     {
-      "description": "Group linuxserver image updates together",
-      "matchDatasources": ["docker"],
-      "matchPackagePatterns": ["lscr.io/linuxserver/.*"],
-      "groupName": "linuxserver images"
+      "description": "Auto-merge GitHub Actions minor/patch/digest as branch",
+      "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["minor", "patch", "digest"],
+      "automerge": true,
+      "automergeType": "branch",
+      "minimumReleaseAge": "3 days"
+    },
+    {
+      "matchPackageNames": ["cloudflare/cloudflared"],
+      "customChangelogUrl": "https://github.com/cloudflare/cloudflared/blob/master/RELEASE_NOTES"
+    },
+    {
+      "matchPackageNames": ["kometateam/kometa"],
+      "customChangelogUrl": "https://github.com/Kometa-Team/Kometa/releases"
+    },
+    {
+      "matchPackageNames": ["lakker/pulsarr"],
+      "customChangelogUrl": "https://github.com/jamcalli/Pulsarr/releases"
+    },
+    {
+      "matchPackageNames": ["justarchi/archisteamfarm"],
+      "customChangelogUrl": "https://github.com/JustArchiNET/ArchiSteamFarm/releases"
+    },
+    {
+      "matchPackageNames": ["ghcr.io/cleanuparr/cleanuparr"],
+      "customChangelogUrl": "https://github.com/cleanuparr/cleanuparr/releases"
     }
   ]
 }
