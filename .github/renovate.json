@@ -9,7 +9,7 @@
     {
       "description": "Versioning for linuxserver images (handle -ls suffix)",
       "matchDatasources": ["docker"],
-      "matchPackagePatterns": ["lscr.io/linuxserver/.*"],
+      "matchPackageNames": ["/lscr\\.io\\/linuxserver\\/.*/"],
       "versioning": "regex:^v?(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)((\\.|-r)(?<build>\\d+))?-ls(?<revision>\\d+)$"
     },
     {
@@ -21,16 +21,16 @@
     {
       "description": "Group linuxserver image updates together",
       "matchDatasources": ["docker"],
-      "matchPackagePatterns": ["lscr.io/linuxserver/.*"],
+      "matchPackageNames": ["/lscr\\.io\\/linuxserver\\/.*/"],
       "groupName": "linuxserver images"
     },
     {
       "description": "Auto-merge linuxserver minor build bumps (ls suffix)",
       "matchDatasources": ["docker"],
-      "matchPackagePatterns": ["lscr.io/linuxserver/.*"],
+      "matchPackageNames": ["/lscr\\.io\\/linuxserver\\/.*/"],
       "matchUpdateTypes": ["patch"],
       "automerge": true,
-      "automergeType": "pr"
+      "automergeType": "branch"
     },
     {
       "description": "Auto-merge GitHub Actions minor/patch/digest as branch",
@@ -105,23 +105,23 @@
     },
     {
       "matchPackageNames": ["cloudflare/cloudflared"],
-      "customChangelogUrl": "https://github.com/cloudflare/cloudflared/blob/master/RELEASE_NOTES"
+      "changelogUrl": "https://github.com/cloudflare/cloudflared/blob/master/RELEASE_NOTES"
     },
     {
       "matchPackageNames": ["kometateam/kometa"],
-      "customChangelogUrl": "https://github.com/Kometa-Team/Kometa/releases"
+      "changelogUrl": "https://github.com/Kometa-Team/Kometa/releases"
     },
     {
       "matchPackageNames": ["lakker/pulsarr"],
-      "customChangelogUrl": "https://github.com/jamcalli/Pulsarr/releases"
+      "changelogUrl": "https://github.com/jamcalli/Pulsarr/releases"
     },
     {
       "matchPackageNames": ["justarchi/archisteamfarm"],
-      "customChangelogUrl": "https://github.com/JustArchiNET/ArchiSteamFarm/releases"
+      "changelogUrl": "https://github.com/JustArchiNET/ArchiSteamFarm/releases"
     },
     {
       "matchPackageNames": ["ghcr.io/cleanuparr/cleanuparr"],
-      "customChangelogUrl": "https://github.com/cleanuparr/cleanuparr/releases"
+      "changelogUrl": "https://github.com/cleanuparr/cleanuparr/releases"
     }
   ]
 }
