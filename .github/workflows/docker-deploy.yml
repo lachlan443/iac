@@ -11,6 +11,9 @@ jobs:
   deploy:
     runs-on: self-hosted
     steps:
+      - name: Set git safe directory
+        run: git config --global --add safe.directory /home/lach/iac
+
       - name: Pull latest changes
         run: git -C /home/lach/iac pull
 
