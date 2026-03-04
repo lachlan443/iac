@@ -52,6 +52,16 @@ services:
       TOKEN: ${BESZEL_TOKEN}
       HUB_URL: ${BESZEL_HUB_URL}
 
+  cloudflared:
+    image: cloudflare/cloudflared:2026.1.1
+    container_name: cloudflared
+    networks:
+      - aar
+    environment:
+      - TZ=${TZ}
+    command: tunnel --no-autoupdate run --token ${CLOUDFLARED_TUNNEL_TOKEN}
+    restart: unless-stopped
+
 networks:
   aar:
     external: true
