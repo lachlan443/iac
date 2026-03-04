@@ -181,7 +181,7 @@ services:
     restart: unless-stopped
 
   portainer:
-    image: portainer/portainer-ce:2.33.6
+    image: portainer/portainer-ce:2.39.0
     container_name: portainer
     network_mode: bridge
     volumes:
