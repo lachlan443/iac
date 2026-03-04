@@ -9,7 +9,7 @@ services:
       - PGID=${PGID}
       - TZ=${TZ}
     volumes:
-      - ./configs/radarr:/config
+      - /home/lach/configs/radarr:/config
       - /data:/data
     ports:
       - 7878:7878
