@@ -1,0 +1,28 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended"
+  ],
+  "timezone": "Australia/Sydney",
+  "schedule": ["before 6am on monday"],
+  "labels": ["renovate"],
+  "docker-compose": {
+    "fileMatch": ["docker/compose\\.yaml$"]
+  },
+  "packageRules": [
+    {
+      "description": "Auto-merge patch updates for trusted linuxserver images",
+      "matchDatasources": ["docker"],
+      "matchPackagePatterns": ["lscr.io/linuxserver/.*"],
+      "matchUpdateTypes": ["patch"],
+      "automerge": true,
+      "automergeType": "pr"
+    },
+    {
+      "description": "Group linuxserver image updates together",
+      "matchDatasources": ["docker"],
+      "matchPackagePatterns": ["lscr.io/linuxserver/.*"],
+      "groupName": "linuxserver images"
+    }
+  ]
+}

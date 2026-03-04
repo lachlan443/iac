@@ -1,0 +1,26 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docker/compose.yaml'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Pull updated images
+        working-directory: docker
+        run: docker compose pull
+
+      - name: Deploy
+        working-directory: docker
+        run: docker compose up -d --remove-orphans
+
+      - name: Clean up old images
+        run: docker image prune -f
