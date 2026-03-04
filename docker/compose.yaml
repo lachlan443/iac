@@ -16,6 +16,42 @@ services:
     restart: unless-stopped
 
 
+  kometa:
+    image: kometateam/kometa:v2.3.0
+    container_name: kometa
+    network_mode: bridge
+    environment:
+      - PMM_CONFIG=${KOMETA_PMM_CONFIG}
+      - KOMETA_TIME=${KOMETA_TIME}
+      - PLEX_UID=${PLEX_UID}
+      - PLEX_GID=${PLEX_GID}
+      - KOMETA_RUN=${KOMETA_RUN}
+      - TZ=${TZ}
+    volumes:
+      - /home/lach/configs/kometa:/config
+    restart: unless-stopped
+
+  beszel-agent:
+    image: henrygd/beszel-agent:0.18.4-alpine
+    container_name: beszel-agent
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /home/lach/configs/beszel-agent:/var/lib/beszel-agent
+      - /data/.beszel:/extra-filesystems/sda1__Media:ro
+    devices:
+      - /dev/sda:/dev/sda
+      - /dev/nvme0:/dev/nvme0
+    cap_add:
+      - SYS_RAWIO
+      - SYS_ADMIN
+    environment:
+      LISTEN: ${BESZEL_LISTEN}
+      KEY: ${BESZEL_KEY}
+      TOKEN: ${BESZEL_TOKEN}
+      HUB_URL: ${BESZEL_HUB_URL}
+
 networks:
   aar:
     external: true
