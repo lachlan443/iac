@@ -159,6 +159,87 @@ services:
     command: tunnel --no-autoupdate run --token ${CLOUDFLARED_TUNNEL_TOKEN}
     restart: unless-stopped
 
+  flaresolverr:
+    image: flaresolverr/flaresolverr:v3.4.6
+    container_name: flaresolverr
+    networks:
+      - aar
+    environment:
+      - TZ=${TZ}
+    ports:
+      - 8191:8191
+    restart: unless-stopped
+
+  homeassistant:
+    image: ghcr.io/home-assistant/home-assistant:2026.1.2
+    container_name: homeassistant
+    network_mode: host
+    environment:
+      - TZ=${TZ}
+    volumes:
+      - /home/lach/configs/homeassistant:/config
+    restart: unless-stopped
+
+  portainer:
+    image: portainer/portainer-ce:2.33.6
+    container_name: portainer
+    network_mode: bridge
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /home/lach/configs/portainer:/data
+    ports:
+      - 9000:9000
+    restart: unless-stopped
+
+  archisteamfarm:
+    image: justarchi/archisteamfarm:6.3.1.6
+    container_name: asf
+    network_mode: bridge
+    environment:
+      - ASF_CRYPTKEY=${ASF_CRYPTKEY}
+    volumes:
+      - /home/lach/configs/asf:/app/config
+      - /home/lach/configs/asf/logs:/app/logs
+    ports:
+      - 1242:1242
+    restart: unless-stopped
+
+  cleanuparr:
+    image: ghcr.io/cleanuparr/cleanuparr:24.04
+    container_name: cleanuparr
+    networks:
+      - aar
+    environment:
+      - PORT=${CLEANUPARR_PORT}
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - UMASK=${CLEANUPARR_UMASK}
+      - TZ=${TZ}
+    volumes:
+      - /home/lach/configs/cleanuparr:/config
+    ports:
+      - 11011:11011
+    restart: unless-stopped
+
+  pulsarr:
+    image: lakker/pulsarr:v0.12.2
+    container_name: pulsarr
+    networks:
+      - aar
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - baseUrl=${PULSARR_BASE_URL}
+      - port=${PULSARR_PORT}
+      - logLevel=${PULSARR_LOG_LEVEL}
+      - NODE_ARGS=${PULSARR_NODE_ARGS}
+    volumes:
+      - /home/lach/configs/pulsarr:/app/data
+    ports:
+      - 3003:3003
+    restart: unless-stopped
+
 networks:
   aar:
     external: true
