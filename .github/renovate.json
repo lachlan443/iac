@@ -108,7 +108,8 @@
     },
     {
       "matchPackageNames": ["ghcr.io/cleanuparr/cleanuparr"],
-      "changelogUrl": "https://github.com/cleanuparr/cleanuparr/releases"
+      "changelogUrl": "https://github.com/cleanuparr/cleanuparr/releases",
+      "sourceUrl": "https://github.com/cleanuparr/cleanuparr"
     },
     {
       "matchPackageNames": ["ghcr.io/recyclarr/recyclarr"],
@@ -128,7 +129,8 @@
     },
     {
       "matchPackageNames": ["portainer/portainer-ce"],
-      "changelogUrl": "https://github.com/portainer/portainer/releases"
+      "changelogUrl": "https://github.com/portainer/portainer/releases",
+      "sourceUrl": "https://github.com/portainer/portainer"
     }
   ]
 }
