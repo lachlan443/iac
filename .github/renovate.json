@@ -100,7 +100,7 @@
     {
       "matchPackageNames": ["lakker/pulsarr"],
       "changelogUrl": "https://github.com/jamcalli/Pulsarr/releases",
-      "registryUrls": ["https://index.docker.io"]
+      "allowedVersions": "!/^1\\.1\\.6$/"
     },
     {
       "matchPackageNames": ["justarchi/archisteamfarm"],
