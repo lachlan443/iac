@@ -3,8 +3,6 @@
   "extends": [
     "config:recommended"
   ],
-  "timezone": "Australia/Sydney",
-  "schedule": ["before 6am on monday"],
   "labels": ["renovate"],
   "semanticCommits": "enabled",
   "packageRules": [
