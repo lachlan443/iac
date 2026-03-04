@@ -57,6 +57,7 @@ services:
     container_name: cloudflared
     networks:
       - aar
+      - monitoring
     environment:
       - TZ=${TZ}
     command: tunnel --no-autoupdate run --token ${CLOUDFLARED_TUNNEL_TOKEN}
@@ -66,3 +67,6 @@ networks:
   aar:
     external: true
     name: arr
+  monitoring:
+    external: true
+    name: monitoring
