@@ -102,6 +102,26 @@
     {
       "matchPackageNames": ["ghcr.io/cleanuparr/cleanuparr"],
       "changelogUrl": "https://github.com/cleanuparr/cleanuparr/releases"
+    },
+    {
+      "matchPackageNames": ["ghcr.io/recyclarr/recyclarr"],
+      "changelogUrl": "https://github.com/recyclarr/recyclarr/releases"
+    },
+    {
+      "matchPackageNames": ["flaresolverr/flaresolverr"],
+      "changelogUrl": "https://github.com/FlareSolverr/FlareSolverr/releases"
+    },
+    {
+      "matchPackageNames": ["ghcr.io/home-assistant/home-assistant"],
+      "changelogUrl": "https://github.com/home-assistant/core/releases"
+    },
+    {
+      "matchPackageNames": ["henrygd/beszel-agent", "henrygd/beszel"],
+      "changelogUrl": "https://github.com/henrygd/beszel/releases"
+    },
+    {
+      "matchPackageNames": ["portainer/portainer-ce"],
+      "changelogUrl": "https://github.com/portainer/portainer/releases"
     }
   ]
 }
