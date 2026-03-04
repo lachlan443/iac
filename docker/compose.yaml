@@ -1,6 +1,6 @@
 services:
   radarr:
-    image: lscr.io/linuxserver/radarr:6.0.4.10291-ls290
+    image: lscr.io/linuxserver/radarr:6.0.4
     container_name: radarr
     networks:
       - aar
@@ -53,7 +53,7 @@ services:
       HUB_URL: ${BESZEL_HUB_URL}
 
   plex:
-    image: lscr.io/linuxserver/plex:1.43.0.10492-121068a07-ls294
+    image: lscr.io/linuxserver/plex:1.43.0
     container_name: plex
     network_mode: host
     environment:
