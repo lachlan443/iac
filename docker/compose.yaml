@@ -240,6 +240,19 @@ services:
       - 3003:3003
     restart: unless-stopped
 
+  backup:
+    image: lachlan443/backblaze-backup:1.0.0
+    container_name: backup
+    environment:
+      - TZ=${TZ}
+      - PUID=${PUID}
+      - PGID=${PGID}
+    volumes:
+      - /home/lach/configs/backup:/config
+      - /home/lach/backups:/backups
+      - /home/lach:/source:ro
+    restart: unless-stopped
+
   renovate:
     image: renovate/renovate:43.52.0
     container_name: renovate
