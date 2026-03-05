@@ -1,0 +1,12 @@
+name: Renovate
+
+on:
+  workflow_dispatch:
+
+jobs:
+  renovate:
+    name: Trigger Renovate run
+    runs-on: self-hosted
+    steps:
+      - name: Restart Renovate container
+        run: docker restart renovate
