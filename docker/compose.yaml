@@ -240,6 +240,24 @@ services:
       - 3003:3003
     restart: unless-stopped
 
+  renovate:
+    image: renovate/renovate:43.52.0
+    container_name: renovate
+    environment:
+      - RENOVATE_PLATFORM=${RENOVATE_PLATFORM}
+      - RENOVATE_REPOSITORIES=${RENOVATE_REPOSITORIES}
+      - RENOVATE_ONBOARDING=${RENOVATE_ONBOARDING}
+      - RENOVATE_REQUIRE_CONFIG=${RENOVATE_REQUIRE_CONFIG}
+      - LOG_LEVEL=${RENOVATE_LOG_LEVEL}
+      - RENOVATE_USERNAME=${RENOVATE_USERNAME}
+      - RENOVATE_GIT_AUTHOR=${RENOVATE_GIT_AUTHOR}
+      - RENOVATE_GITHUB_APP_ID=${RENOVATE_GITHUB_APP_ID}
+      - RENOVATE_GITHUB_APP_KEY=${RENOVATE_GITHUB_APP_KEY}
+    volumes:
+      - /home/lach/configs/renovate:/config
+    entrypoint: ["/bin/sh", "/config/entrypoint.sh"]
+    restart: unless-stopped
+
 networks:
   aar:
     external: true
