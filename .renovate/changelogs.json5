@@ -1,0 +1,52 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  packageRules: [
+    {
+      matchPackageNames: ["cloudflare/cloudflared"],
+      changelogUrl: "https://github.com/cloudflare/cloudflared/blob/master/RELEASE_NOTES",
+    },
+    {
+      matchPackageNames: ["kometateam/kometa"],
+      changelogUrl: "https://github.com/Kometa-Team/Kometa/releases",
+    },
+    {
+      matchPackageNames: ["lakker/pulsarr"],
+      changelogUrl: "https://github.com/jamcalli/Pulsarr/releases",
+      allowedVersions: "!/^1\\.1\\.6$/",
+    },
+    {
+      matchPackageNames: ["justarchi/archisteamfarm"],
+      changelogUrl: "https://github.com/JustArchiNET/ArchiSteamFarm/releases",
+    },
+    {
+      matchPackageNames: ["ghcr.io/cleanuparr/cleanuparr"],
+      changelogUrl: "https://github.com/cleanuparr/cleanuparr/releases",
+      sourceUrl: "https://github.com/cleanuparr/cleanuparr",
+    },
+    {
+      matchPackageNames: ["ghcr.io/recyclarr/recyclarr"],
+      changelogUrl: "https://github.com/recyclarr/recyclarr/releases",
+    },
+    {
+      matchPackageNames: ["flaresolverr/flaresolverr"],
+      changelogUrl: "https://github.com/FlareSolverr/FlareSolverr/releases",
+    },
+    {
+      matchPackageNames: ["ghcr.io/home-assistant/home-assistant"],
+      changelogUrl: "https://github.com/home-assistant/core/releases",
+    },
+    {
+      matchPackageNames: ["henrygd/beszel-agent", "henrygd/beszel"],
+      changelogUrl: "https://github.com/henrygd/beszel/releases",
+    },
+    {
+      matchPackageNames: ["portainer/portainer-ce"],
+      changelogUrl: "https://github.com/portainer/portainer/releases",
+      sourceUrl: "https://github.com/portainer/portainer",
+    },
+    {
+      matchPackageNames: ["lachlan443/backblaze-backup"],
+      sourceUrl: "https://github.com/lachlan443/backblaze-backup",
+    },
+  ],
+}

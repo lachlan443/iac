@@ -1,0 +1,43 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  packageRules: [
+    {
+      description: "Semantic commits - major",
+      matchUpdateTypes: ["major"],
+      semanticCommitType: "feat",
+      commitMessagePrefix: "{{semanticCommitType}}({{semanticCommitScope}})!:",
+      commitMessageExtra: "( {{currentVersion}} → {{newVersion}} )",
+    },
+    {
+      description: "Semantic commits - minor",
+      matchUpdateTypes: ["minor"],
+      semanticCommitType: "feat",
+      commitMessageExtra: "( {{currentVersion}} → {{newVersion}} )",
+    },
+    {
+      description: "Semantic commits - patch",
+      matchUpdateTypes: ["patch"],
+      semanticCommitType: "chore",
+      commitMessageExtra: "( {{currentVersion}} → {{newVersion}} )",
+    },
+    {
+      description: "Semantic commits - digest",
+      matchUpdateTypes: ["digest"],
+      semanticCommitType: "chore",
+      commitMessageExtra: "( {{currentDigestShort}} → {{newDigestShort}} )",
+    },
+    {
+      description: "Semantic scope for containers",
+      matchDatasources: ["docker"],
+      semanticCommitScope: "container",
+      commitMessageTopic: "image {{depName}}",
+    },
+    {
+      description: "Semantic scope for GitHub Actions",
+      matchManagers: ["github-actions"],
+      semanticCommitType: "ci",
+      semanticCommitScope: "github-action",
+      commitMessageTopic: "action {{depName}}",
+    },
+  ],
+}

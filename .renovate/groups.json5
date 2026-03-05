@@ -1,0 +1,11 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  packageRules: [
+    {
+      description: "Group linuxserver image updates together",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["/lscr\\.io\\/linuxserver\\/.*/"],
+      groupName: "linuxserver images",
+    },
+  ],
+}
