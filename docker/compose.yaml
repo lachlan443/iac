@@ -254,7 +254,7 @@ services:
     restart: unless-stopped
 
   beszel:
-    image: henrygd/beszel:0.18.2
+    image: henrygd/beszel:0.18.4
     container_name: beszel
     networks:
       - monitoring
