@@ -3,6 +3,9 @@ docker/.env
 docker/**/.env
 .env
 
+# Container config data - never commit
+docker/configs/
+
 # Env backups
 *.env.bak*
 
