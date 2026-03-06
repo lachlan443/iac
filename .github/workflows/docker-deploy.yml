@@ -12,6 +12,9 @@ jobs:
     name: Deploy to home server
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Load secrets from 1Password
         uses: 1password/load-secrets-action@v3
         with:
@@ -34,7 +37,14 @@ jobs:
         with:
           ssh-private-key: ${{ env.SSH_PRIVATE_KEY }}
 
+      - name: Rsync compose file
+        run: |
+          ssh -o StrictHostKeyChecking=accept-new lach@ubuntu "mkdir -p /home/lach/docker"
+          rsync -az docker/compose.yaml lach@ubuntu:/home/lach/docker/compose.yaml
+
       - name: Deploy
         run: |
-          ssh -o StrictHostKeyChecking=accept-new lach@ubuntu \
-            "cd /home/lach/iac && git pull && cd docker && docker compose pull && docker compose up -d && docker image prune -f"
+          ssh lach@ubuntu \
+            "docker compose -f /home/lach/docker/compose.yaml pull && \
+             docker compose -f /home/lach/docker/compose.yaml up -d && \
+             docker image prune -f"
