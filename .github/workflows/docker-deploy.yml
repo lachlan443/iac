@@ -9,21 +9,30 @@ on:
 
 jobs:
   deploy:
-    runs-on: self-hosted
+    name: Deploy to home server
+    runs-on: ubuntu-latest
     steps:
-      - name: Set git safe directory
-        run: git config --global --add safe.directory /home/lach/iac
+      - name: Load secrets from 1Password
+        uses: 1password/load-secrets-action@v2
+        with:
+          export-env: true
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          SSH_PRIVATE_KEY: op://homelab/CI SSH Key/private key
+          TS_OAUTH_CLIENT_ID: op://homelab/Tailscale OAuth/username
+          TS_OAUTH_CLIENT_SECRET: op://homelab/Tailscale OAuth/password
 
-      - name: Pull latest changes
-        run: git -C /home/lach/iac pull
-
-      - name: Pull updated images
-        working-directory: /home/lach/iac/docker
-        run: docker compose pull
+      - name: Connect to Tailscale
+        uses: tailscale/github-action@v2
+        with:
+          oauth-client-id: ${{ env.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ env.TS_OAUTH_CLIENT_SECRET }}
+          tags: tag:ci
 
       - name: Deploy
-        working-directory: /home/lach/iac/docker
-        run: docker compose up -d
-
-      - name: Clean up old images
-        run: docker image prune -f
+        run: |
+          echo "$SSH_PRIVATE_KEY" > /tmp/deploy_key
+          chmod 600 /tmp/deploy_key
+          ssh -i /tmp/deploy_key -o StrictHostKeyChecking=accept-new lach@ubuntu \
+            "cd /home/lach/iac && git pull && cd docker && docker compose pull && docker compose up -d && docker image prune -f"
+          rm /tmp/deploy_key
