@@ -42,9 +42,11 @@ jobs:
           ssh -o StrictHostKeyChecking=accept-new lach@ubuntu "mkdir -p /home/lach/docker"
           rsync -az docker/compose.yaml lach@ubuntu:/home/lach/docker/compose.yaml
 
+      - name: Pull images
+        run: ssh lach@ubuntu "docker compose -f /home/lach/docker/compose.yaml pull"
+
       - name: Deploy
-        run: |
-          ssh lach@ubuntu \
-            "docker compose -f /home/lach/docker/compose.yaml pull && \
-             docker compose -f /home/lach/docker/compose.yaml up -d && \
-             docker image prune -f"
+        run: ssh lach@ubuntu "docker compose -f /home/lach/docker/compose.yaml up -d"
+
+      - name: Prune unused images
+        run: ssh lach@ubuntu "docker image prune -a -f"
