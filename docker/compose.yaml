@@ -283,7 +283,7 @@ services:
     restart: unless-stopped
 
   tailscale:
-    image: tailscale/tailscale:v1.94.2
+    image: tailscale/tailscale:v1.92.5
     container_name: tailscale
     hostname: ubuntu-server
     network_mode: host

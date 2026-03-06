@@ -50,7 +50,7 @@ jobs:
         run: ssh lach@ubuntu "docker compose -f /home/lach/docker/compose.yaml pull"
 
       - name: Deploy
-        run: ssh lach@ubuntu "docker compose -f /home/lach/docker/compose.yaml up -d"
+        run: ssh lach@ubuntu "nohup docker compose -f /home/lach/docker/compose.yaml up -d > /tmp/deploy.log 2>&1 &"
 
       - name: Prune unused images
         run: ssh lach@ubuntu "docker image prune -a -f"
