@@ -2,12 +2,12 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:recommended",
-    "local>//.renovate/autoMerge.json5",
-    "local>//.renovate/labels.json5",
-    "local>//.renovate/semantic.json5",
-    "local>//.renovate/versioning.json5",
-    "local>//.renovate/changelogs.json5",
-    "local>//.renovate/groups.json5"
+    "local>lachlan443/iac//.renovate/autoMerge",
+    "local>lachlan443/iac//.renovate/labels",
+    "local>lachlan443/iac//.renovate/semantic",
+    "local>lachlan443/iac//.renovate/versioning",
+    "local>lachlan443/iac//.renovate/changelogs",
+    "local>lachlan443/iac//.renovate/groups"
   ],
   "labels": ["renovate"],
   "semanticCommits": "enabled"
