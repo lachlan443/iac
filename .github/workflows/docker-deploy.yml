@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'docker/compose.yaml'
+      - 'docker/.env.1password'
   workflow_dispatch:
 
 concurrency:
@@ -41,16 +42,16 @@ jobs:
         with:
           ssh-private-key: ${{ env.SSH_PRIVATE_KEY }}
 
-      - name: Rsync compose file
+      - name: Rsync files
         run: |
           ssh -o StrictHostKeyChecking=accept-new lach@ubuntu "mkdir -p /home/lach/docker"
-          rsync -az docker/compose.yaml lach@ubuntu:/home/lach/docker/compose.yaml
+          rsync -az docker/compose.yaml docker/.env.1password lach@ubuntu:/home/lach/docker/
 
       - name: Pull images
         run: ssh lach@ubuntu "docker compose -f /home/lach/docker/compose.yaml pull"
 
       - name: Deploy
-        run: ssh lach@ubuntu "nohup docker compose -f /home/lach/docker/compose.yaml up -d > /tmp/deploy.log 2>&1 &"
+        run: ssh lach@ubuntu "op run --env-file=/home/lach/docker/.env.1password -- docker compose -f /home/lach/docker/compose.yaml up -d"
 
       - name: Prune unused images
         run: ssh lach@ubuntu "docker image prune -a -f"
