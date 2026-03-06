@@ -205,7 +205,7 @@ services:
     restart: unless-stopped
 
   cleanuparr:
-    image: ghcr.io/cleanuparr/cleanuparr:2.5.1
+    image: ghcr.io/cleanuparr/cleanuparr:2.7.7
     container_name: cleanuparr
     networks:
       - aar
