@@ -31,8 +31,7 @@ jobs:
 
       - name: Deploy
         run: |
-          echo "$SSH_PRIVATE_KEY" > /tmp/deploy_key
-          chmod 600 /tmp/deploy_key
-          ssh -i /tmp/deploy_key -o StrictHostKeyChecking=accept-new lach@ubuntu \
+          eval $(ssh-agent)
+          echo "$SSH_PRIVATE_KEY" | ssh-add -
+          ssh -o StrictHostKeyChecking=accept-new lach@ubuntu \
             "cd /home/lach/iac && git pull && cd docker && docker compose pull && docker compose up -d && docker image prune -f"
-          rm /tmp/deploy_key
