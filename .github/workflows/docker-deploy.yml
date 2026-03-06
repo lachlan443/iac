@@ -13,12 +13,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Load secrets from 1Password
-        uses: 1password/load-secrets-action@v2
+        uses: 1password/load-secrets-action@v3
         with:
           export-env: true
         env:
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
-          SSH_PRIVATE_KEY: op://homelab/CI SSH Key/private key
+          SSH_PRIVATE_KEY: op://homelab/CI SSH Key/private key?ssh-format=openssh
           TS_OAUTH_CLIENT_ID: op://homelab/Tailscale OAuth/username
           TS_OAUTH_CLIENT_SECRET: op://homelab/Tailscale OAuth/password
 
