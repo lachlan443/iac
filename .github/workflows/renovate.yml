@@ -8,6 +8,13 @@ jobs:
     name: Trigger Renovate run
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Get Renovate image
+        id: image
+        run: echo "image=$(grep 'image: renovate/renovate' docker/compose.yaml | awk '{print $2}')" >> $GITHUB_OUTPUT
+
       - name: Load secrets from 1Password
         uses: 1password/load-secrets-action@v3
         with:
@@ -56,4 +63,4 @@ jobs:
               -e RENOVATE_USERNAME='lachlan443-renovate[bot]' \
               -e RENOVATE_GIT_AUTHOR='lachlan443-renovate[bot] <265741650+lachlan443-renovate[bot]@users.noreply.github.com>' \
               -e LOG_LEVEL=info \
-              renovate/renovate:43.52.0"
+              ${{ steps.image.outputs.image }}"
