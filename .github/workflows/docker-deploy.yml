@@ -29,9 +29,12 @@ jobs:
           oauth-secret: ${{ env.TS_OAUTH_CLIENT_SECRET }}
           tags: tag:ci
 
+      - name: Setup SSH agent
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ env.SSH_PRIVATE_KEY }}
+
       - name: Deploy
         run: |
-          eval $(ssh-agent)
-          echo "$SSH_PRIVATE_KEY" | ssh-add -
           ssh -o StrictHostKeyChecking=accept-new lach@ubuntu \
             "cd /home/lach/iac && git pull && cd docker && docker compose pull && docker compose up -d && docker image prune -f"
