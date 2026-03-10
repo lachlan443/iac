@@ -192,7 +192,7 @@ services:
     restart: unless-stopped
 
   archisteamfarm:
-    image: justarchi/archisteamfarm:6.3.3.3
+    image: justarchi/archisteamfarm:6.3.4.0
     container_name: asf
     network_mode: bridge
     environment:
