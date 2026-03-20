@@ -5,7 +5,7 @@ on:
     branches: [main]
     paths:
       - 'docker/compose.yaml'
-      - 'docker/.env.1password'
+
   workflow_dispatch:
 
 concurrency:
@@ -20,38 +20,28 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Load secrets from 1Password
-        uses: 1password/load-secrets-action@v3
-        with:
-          export-env: true
-        env:
-          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
-          SSH_PRIVATE_KEY: op://homelab/CI SSH Key/private key?ssh-format=openssh
-          TS_OAUTH_CLIENT_ID: op://homelab/Tailscale OAuth/username
-          TS_OAUTH_CLIENT_SECRET: op://homelab/Tailscale OAuth/password
-
       - name: Connect to Tailscale
         uses: tailscale/github-action@v4
         with:
-          oauth-client-id: ${{ env.TS_OAUTH_CLIENT_ID }}
-          oauth-secret: ${{ env.TS_OAUTH_CLIENT_SECRET }}
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_CLIENT_SECRET }}
           tags: tag:ci
 
       - name: Setup SSH agent
         uses: webfactory/ssh-agent@v0.9.0
         with:
-          ssh-private-key: ${{ env.SSH_PRIVATE_KEY }}
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Rsync files
         run: |
           ssh -o StrictHostKeyChecking=accept-new lach@ubuntu "mkdir -p /home/lach/docker"
-          rsync -az docker/compose.yaml docker/.env.1password lach@ubuntu:/home/lach/docker/
+          rsync -az docker/compose.yaml lach@ubuntu:/home/lach/docker/
 
       - name: Pull images
         run: ssh lach@ubuntu "docker compose -f /home/lach/docker/compose.yaml pull"
 
       - name: Deploy
-        run: ssh lach@ubuntu "op run --env-file=/home/lach/docker/.env.1password -- docker compose -f /home/lach/docker/compose.yaml up -d"
+        run: ssh lach@ubuntu "docker compose -f /home/lach/docker/compose.yaml up -d"
 
       - name: Prune unused images
         run: ssh lach@ubuntu "docker image prune -a -f"
