@@ -7,6 +7,23 @@ services:
     networks:
       - sour
 
+  beszel-agent:
+    image: henrygd/beszel-agent:0.18.4-alpine
+    container_name: beszel-agent
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /home/lach/configs/beszel-agent:/var/lib/beszel-agent
+    cap_add:
+      - SYS_RAWIO
+      - SYS_ADMIN
+    environment:
+      LISTEN: ${BESZEL_LISTEN}
+      KEY: ${BESZEL_KEY}
+      TOKEN: ${BESZEL_TOKEN}
+      HUB_URL: ${BESZEL_HUB_URL}
+
   beszel:
     image: henrygd/beszel:0.18.4
     container_name: beszel
