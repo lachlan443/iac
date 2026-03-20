@@ -4,8 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'docker/compose.yaml'
-
+      - 'docker/**'
   workflow_dispatch:
 
 concurrency:
@@ -13,8 +12,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  deploy:
-    name: Deploy to home server
+  deploy-sweet:
+    name: Deploy to sweet
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -32,16 +31,49 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Rsync files
+      - name: Rsync compose
         run: |
-          ssh -o StrictHostKeyChecking=accept-new lach@ubuntu "mkdir -p /home/lach/docker"
-          rsync -az docker/compose.yaml lach@ubuntu:/home/lach/docker/
+          ssh -o StrictHostKeyChecking=accept-new lach@sweet "mkdir -p /home/lach/docker"
+          rsync -az docker/sweet/compose.yaml lach@sweet:/home/lach/docker/compose.yaml
 
       - name: Pull images
-        run: ssh lach@ubuntu "docker compose -f /home/lach/docker/compose.yaml pull"
+        run: ssh lach@sweet "docker compose -f /home/lach/docker/compose.yaml pull"
 
       - name: Deploy
-        run: ssh lach@ubuntu "docker compose -f /home/lach/docker/compose.yaml up -d"
+        run: ssh lach@sweet "docker compose -f /home/lach/docker/compose.yaml up -d"
 
       - name: Prune unused images
-        run: ssh lach@ubuntu "docker image prune -a -f"
+        run: ssh lach@sweet "docker image prune -a -f"
+
+  # deploy-sour:
+  #   name: Deploy to sour
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v6
+  #
+  #     - name: Connect to Tailscale
+  #       uses: tailscale/github-action@v4
+  #       with:
+  #         oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+  #         oauth-secret: ${{ secrets.TS_OAUTH_CLIENT_SECRET }}
+  #         tags: tag:ci
+  #
+  #     - name: Setup SSH agent
+  #       uses: webfactory/ssh-agent@v0.9.0
+  #       with:
+  #         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+  #
+  #     - name: Rsync compose
+  #       run: |
+  #         ssh -o StrictHostKeyChecking=accept-new lach@sour "mkdir -p /home/lach/docker"
+  #         rsync -az docker/sour/compose.yaml lach@sour:/home/lach/docker/compose.yaml
+  #
+  #     - name: Pull images
+  #       run: ssh lach@sour "docker compose -f /home/lach/docker/compose.yaml pull"
+  #
+  #     - name: Deploy
+  #       run: ssh lach@sour "docker compose -f /home/lach/docker/compose.yaml up -d"
+  #
+  #     - name: Prune unused images
+  #       run: ssh lach@sour "docker image prune -a -f"
