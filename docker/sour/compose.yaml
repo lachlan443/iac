@@ -1,4 +1,14 @@
 services:
+  traefik:
+    image: traefik:v3.3
+    container_name: traefik
+    network_mode: host
+    environment:
+      - CF_DNS_API_TOKEN=${CF_DNS_API_TOKEN}
+    volumes:
+      - /home/lach/configs/traefik:/etc/traefik
+    restart: unless-stopped
+
   cloudflared:
     image: cloudflare/cloudflared:2026.3.0
     container_name: cloudflared
