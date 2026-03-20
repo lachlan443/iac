@@ -190,17 +190,6 @@ services:
       - /home/lach/configs/homeassistant:/config
     restart: unless-stopped
 
-  portainer:
-    image: portainer/portainer-ce:2.39.1
-    container_name: portainer
-    network_mode: bridge
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /home/lach/configs/portainer:/data
-    ports:
-      - 9000:9000
-    restart: unless-stopped
-
   cleanuparr:
     image: ghcr.io/cleanuparr/cleanuparr:2.7.7
     container_name: cleanuparr
