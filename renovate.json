@@ -23,6 +23,12 @@
   ],
   "packageRules": [
     {
+      "description": "ASF - disable built-in docker manager so custom github-releases manager takes over",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["justarchi/archisteamfarm"],
+      "enabled": false
+    },
+    {
       "description": "ASF - ignore pre-releases",
       "matchDatasources": ["github-releases"],
       "matchPackageNames": ["JustArchiNET/ArchiSteamFarm"],
