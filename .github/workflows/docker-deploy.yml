@@ -7,10 +7,6 @@ on:
       - 'docker/**'
   workflow_dispatch:
 
-concurrency:
-  group: docker-deploy
-  cancel-in-progress: true
-
 jobs:
   changes:
     runs-on: ubuntu-latest
@@ -36,6 +32,9 @@ jobs:
     needs: changes
     if: needs.changes.outputs.sweet == 'true'
     runs-on: ubuntu-latest
+    concurrency:
+      group: deploy-sweet
+      cancel-in-progress: true
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -71,6 +70,9 @@ jobs:
     needs: changes
     if: needs.changes.outputs.sour == 'true'
     runs-on: ubuntu-latest
+    concurrency:
+      group: deploy-sour
+      cancel-in-progress: true
     steps:
       - name: Checkout
         uses: actions/checkout@v6
