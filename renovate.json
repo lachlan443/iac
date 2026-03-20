@@ -10,5 +10,23 @@
     "github>lachlan443/iac//.renovate/groups.json5"
   ],
   "labels": ["renovate"],
-  "semanticCommits": "enabled"
+  "semanticCommits": "enabled",
+  "customManagers": [
+    {
+      "description": "ASF - use GitHub releases to respect pre-release flag",
+      "customType": "regex",
+      "fileMatch": ["docker/.+/compose\\.yaml$"],
+      "matchStrings": ["justarchi/archisteamfarm:(?<currentValue>[^\\s]+)"],
+      "datasourceTemplate": "github-releases",
+      "depNameTemplate": "JustArchiNET/ArchiSteamFarm"
+    }
+  ],
+  "packageRules": [
+    {
+      "description": "ASF - ignore pre-releases",
+      "matchDatasources": ["github-releases"],
+      "matchPackageNames": ["JustArchiNET/ArchiSteamFarm"],
+      "ignoreUnstable": true
+    }
+  ]
 }
