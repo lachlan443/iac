@@ -35,6 +35,17 @@ services:
     networks:
       - sour
 
+  backup:
+    image: lachlan443/backblaze-backup:1.2.0
+    container_name: backup
+    environment:
+      - TZ=${TZ}
+    volumes:
+      - /home/lach/configs/backup:/config
+      - /home/lach/backups:/backups
+      - /home/lach:/source:ro
+    restart: unless-stopped
+
 networks:
   sour:
     name: sour
