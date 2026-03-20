@@ -1,13 +1,23 @@
 services:
-  nginx:
-    image: nginx:1.27.4
-    container_name: nginx
-    ports:
-      - 80:80
-    restart: unless-stopped
-
   cloudflared:
     image: cloudflare/cloudflared:2026.2.0
     container_name: cloudflared
     command: tunnel --no-autoupdate run --token ${CLOUDFLARED_TUNNEL_TOKEN}
     restart: unless-stopped
+    networks:
+      - sour
+
+  beszel:
+    image: henrygd/beszel:0.18.4
+    container_name: beszel
+    ports:
+      - 8090:8090
+    volumes:
+      - /home/lach/configs/beszel:/beszel_data
+    restart: unless-stopped
+    networks:
+      - sour
+
+networks:
+  sour:
+    name: sour

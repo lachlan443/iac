@@ -253,17 +253,6 @@ services:
       - /home/lach:/source:ro
     restart: unless-stopped
 
-  beszel:
-    image: henrygd/beszel:0.18.4
-    container_name: beszel
-    networks:
-      - monitoring
-    ports:
-      - 8090:8090
-    volumes:
-      - /home/lach/configs/beszel:/beszel_data
-    restart: unless-stopped
-
   renovate:
     image: renovate/renovate:43.84.0
     container_name: renovate
