@@ -9,6 +9,15 @@ services:
       - /home/lach/configs/traefik:/etc/traefik
     restart: unless-stopped
 
+  coredns:
+    image: coredns/coredns:1.12.0
+    container_name: coredns
+    network_mode: host
+    command: -conf /etc/coredns/Corefile
+    volumes:
+      - /home/lach/configs/coredns:/etc/coredns
+    restart: unless-stopped
+
   cloudflared:
     image: cloudflare/cloudflared:2026.3.0
     container_name: cloudflared
