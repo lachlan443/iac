@@ -14,7 +14,7 @@ jobs:
       - name: Get Renovate image
         id: image
         run: |
-          IMAGE=$(grep 'image: renovate/renovate' docker/compose.yaml | awk '{print $2}')
+          IMAGE=$(grep 'image: renovate/renovate' docker/sweet/compose.yaml | awk '{print $2}')
           echo "image=$IMAGE" >> $GITHUB_OUTPUT
 
       - name: Generate GitHub App token
@@ -43,7 +43,7 @@ jobs:
         env:
           RENOVATE_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
-          ssh -o StrictHostKeyChecking=accept-new lach@ubuntu \
+          ssh -o StrictHostKeyChecking=accept-new lach@sweet \
             "docker run --rm \
               -e RENOVATE_TOKEN='${RENOVATE_TOKEN}' \
               -e RENOVATE_PLATFORM=github \
