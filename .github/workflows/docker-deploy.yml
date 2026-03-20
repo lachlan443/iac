@@ -30,7 +30,7 @@ jobs:
   deploy-sweet:
     name: Deploy to sweet
     needs: changes
-    if: needs.changes.outputs.sweet == 'true'
+    if: needs.changes.outputs.sweet == 'true' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     concurrency:
       group: deploy-sweet
@@ -68,7 +68,7 @@ jobs:
   deploy-sour:
     name: Deploy to sour
     needs: changes
-    if: needs.changes.outputs.sour == 'true'
+    if: needs.changes.outputs.sour == 'true' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     concurrency:
       group: deploy-sour
