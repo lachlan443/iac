@@ -61,7 +61,7 @@ jobs:
         run: ssh lach@sweet "docker compose -f /home/lach/docker/compose.yaml pull"
 
       - name: Deploy
-        run: ssh lach@sweet "docker compose -f /home/lach/docker/compose.yaml up -d"
+        run: ssh lach@sweet "docker compose -f /home/lach/docker/compose.yaml up -d --remove-orphans"
 
       - name: Prune unused images
         run: ssh lach@sweet "docker image prune -a -f"
@@ -96,7 +96,7 @@ jobs:
         run: ssh lach@sour "docker compose -f /home/lach/docker/compose.yaml pull"
 
       - name: Deploy
-        run: ssh lach@sour "docker compose -f /home/lach/docker/compose.yaml up -d"
+        run: ssh lach@sour "docker compose -f /home/lach/docker/compose.yaml up -d --remove-orphans"
 
       - name: Prune unused images
         run: ssh lach@sour "docker image prune -a -f"
