@@ -191,19 +191,6 @@ services:
       - 9000:9000
     restart: unless-stopped
 
-  archisteamfarm:
-    image: justarchi/archisteamfarm:6.3.3.3
-    container_name: asf
-    network_mode: bridge
-    environment:
-      - ASF_CRYPTKEY=${ASF_CRYPTKEY}
-    volumes:
-      - /home/lach/configs/asf:/app/config
-      - /home/lach/configs/asf/logs:/app/logs
-    ports:
-      - 1242:1242
-    restart: unless-stopped
-
   cleanuparr:
     image: ghcr.io/cleanuparr/cleanuparr:2.7.7
     container_name: cleanuparr

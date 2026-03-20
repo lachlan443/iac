@@ -35,6 +35,19 @@ services:
     networks:
       - sour
 
+  archisteamfarm:
+    image: justarchi/archisteamfarm:6.3.3.3
+    container_name: asf
+    network_mode: bridge
+    environment:
+      - ASF_CRYPTKEY=${ASF_CRYPTKEY}
+    volumes:
+      - /home/lach/configs/asf:/app/config
+      - /home/lach/configs/asf/logs:/app/logs
+    ports:
+      - 1242:1242
+    restart: unless-stopped
+
   backup:
     image: lachlan443/backblaze-backup:1.2.0
     container_name: backup
