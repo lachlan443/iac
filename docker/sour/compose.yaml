@@ -67,11 +67,6 @@ services:
       - 1242:1242
     restart: unless-stopped
 
-  archisteamfarm-test:
-    image: justarchi/archisteamfarm:6.3.1.6
-    container_name: asf-test
-    restart: unless-stopped
-
   backup:
     image: lachlan443/backblaze-backup:1.2.0
     container_name: backup
