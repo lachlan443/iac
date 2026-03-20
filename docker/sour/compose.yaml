@@ -68,7 +68,7 @@ services:
     restart: unless-stopped
 
   archisteamfarm-test:
-    image: justarchi/archisteamfarm:6.3.1.6
+    image: justarchi/archisteamfarm:6.3.3.3
     container_name: asf-test
     restart: unless-stopped
 
