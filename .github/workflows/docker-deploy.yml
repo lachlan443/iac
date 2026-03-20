@@ -12,8 +12,29 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      sweet: ${{ steps.filter.outputs.sweet }}
+      sour: ${{ steps.filter.outputs.sour }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Detect changes
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            sweet:
+              - 'docker/sweet/**'
+            sour:
+              - 'docker/sour/**'
+
   deploy-sweet:
     name: Deploy to sweet
+    needs: changes
+    if: needs.changes.outputs.sweet == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -47,6 +68,8 @@ jobs:
 
   deploy-sour:
     name: Deploy to sour
+    needs: changes
+    if: needs.changes.outputs.sour == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
