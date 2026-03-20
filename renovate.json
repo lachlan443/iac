@@ -29,9 +29,10 @@
       "enabled": false
     },
     {
-      "description": "ASF - ignore pre-releases",
+      "description": "ASF - use 4-part versioning and ignore pre-releases",
       "matchDatasources": ["github-releases"],
       "matchPackageNames": ["JustArchiNET/ArchiSteamFarm"],
+      "versioning": "regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)\\.(?<build>\\d+)$",
       "ignoreUnstable": true
     }
   ]
