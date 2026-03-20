@@ -5,3 +5,9 @@ services:
     ports:
       - 80:80
     restart: unless-stopped
+
+  cloudflared:
+    image: cloudflare/cloudflared:2026.2.0
+    container_name: cloudflared
+    command: tunnel --no-autoupdate run --token ${CLOUDFLARED_TUNNEL_TOKEN}
+    restart: unless-stopped
