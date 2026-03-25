@@ -240,7 +240,7 @@ services:
     restart: unless-stopped
 
   renovate:
-    image: renovate/renovate:43.84.0
+    image: renovate/renovate:43.89.7
     container_name: renovate
     environment:
       - RENOVATE_PLATFORM=${RENOVATE_PLATFORM}
