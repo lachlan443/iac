@@ -135,6 +135,8 @@ services:
     cap_add:
       - SYS_RAWIO
       - SYS_ADMIN
+    # Delay start to wait for Tailscale to connect before attempting to reach the hub
+    entrypoint: ["/bin/sh", "-c", "sleep 60 && exec /agent"]
     environment:
       LISTEN: ${BESZEL_LISTEN}
       KEY: ${BESZEL_KEY}
