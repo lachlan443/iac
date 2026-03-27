@@ -273,7 +273,7 @@ services:
       - RADARR_0_SEARCH_AMOUNT=5
       - SONARR_0_URL=http://sonarr:8989
       - SONARR_0_API_KEY=${SONARR_API_KEY}
-      - SONARR_0_SEARCH_AMOUNT=20
+      - SONARR_0_SEARCH_AMOUNT=5
     volumes:
       - /home/lach/configs/fetcharr:/app/config
     restart: unless-stopped
