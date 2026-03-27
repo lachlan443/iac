@@ -260,7 +260,7 @@ services:
     restart: unless-stopped
 
   fetcharr:
-    image: egg82/fetcharr:2.0.0
+    image: egg82/fetcharr:2.1.0
     container_name: fetcharr
     hostname: fetcharr
     networks:
