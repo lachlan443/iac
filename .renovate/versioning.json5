@@ -8,12 +8,6 @@
       versioning: "regex:^version-(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)-r(?<build>\\d+)$",
     },
     {
-      description: "LinuxServer.io containers: ignore build metadata (e.g. 2.3.5.5327 → 2.3.5)",
-      matchDatasources: ["docker"],
-      matchPackagePrefixes: ["lscr.io/linuxserver/"],
-      versioning: "regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)(?:\\.\\d+)?$"
-    },
-    {
       "description": "ASF - use 4-part versioning and ignore pre-releases",
       "matchDatasources": ["github-releases"],
       "matchPackageNames": ["JustArchiNET/ArchiSteamFarm"],
