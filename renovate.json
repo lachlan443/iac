@@ -29,6 +29,12 @@
       "enabled": false
     },
     {
+      "description": "Renovate uses :latest tag, no need to track versions",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["renovate/renovate"],
+      "enabled": false
+    },
+    {
       "description": "ASF - use 4-part versioning and ignore pre-releases",
       "matchDatasources": ["github-releases"],
       "matchPackageNames": ["JustArchiNET/ArchiSteamFarm"],
