@@ -259,6 +259,15 @@ services:
     entrypoint: ["/bin/sh", "/config/entrypoint.sh"]
     restart: unless-stopped
 
+  habits:
+    image: lachlan443/habits:v1.1.0
+    container_name: habits
+    volumes:
+      - /home/lach/configs/habits:/config
+    ports:
+      - 7160:7160
+    restart: unless-stopped
+
 networks:
   aar:
     external: true
