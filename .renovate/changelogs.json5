@@ -8,6 +8,7 @@
     {
       matchPackageNames: ["kometateam/kometa"],
       changelogUrl: "https://github.com/Kometa-Team/Kometa/releases",
+      sourceUrl: "https://github.com/Kometa-Team/Kometa",
     },
     {
       matchPackageNames: ["lakker/pulsarr"],
@@ -43,6 +44,46 @@
       matchPackageNames: ["portainer/portainer-ce"],
       changelogUrl: "https://github.com/portainer/portainer/releases",
       sourceUrl: "https://github.com/portainer/portainer",
+    },
+    {
+      matchPackageNames: ["lscr.io/linuxserver/radarr"],
+      sourceUrl: "https://github.com/Radarr/Radarr",
+      changelogUrl: "https://github.com/Radarr/Radarr/releases",
+    },
+    {
+      matchPackageNames: ["lscr.io/linuxserver/plex"],
+      sourceUrl: "https://github.com/linuxserver/docker-plex",
+      changelogUrl: "https://github.com/linuxserver/docker-plex/releases",
+    },
+    {
+      matchPackageNames: ["lscr.io/linuxserver/sonarr"],
+      sourceUrl: "https://github.com/Sonarr/Sonarr",
+      changelogUrl: "https://github.com/Sonarr/Sonarr/releases",
+    },
+    {
+      matchPackageNames: ["lscr.io/linuxserver/prowlarr"],
+      sourceUrl: "https://github.com/Prowlarr/Prowlarr",
+      changelogUrl: "https://github.com/Prowlarr/Prowlarr/releases",
+    },
+    {
+      matchPackageNames: ["lscr.io/linuxserver/sabnzbd"],
+      sourceUrl: "https://github.com/sabnzbd/sabnzbd",
+      changelogUrl: "https://github.com/sabnzbd/sabnzbd/releases",
+    },
+    {
+      matchPackageNames: ["lscr.io/linuxserver/qbittorrent"],
+      sourceUrl: "https://github.com/linuxserver/docker-qbittorrent",
+      changelogUrl: "https://github.com/linuxserver/docker-qbittorrent/releases",
+    },
+    {
+      matchPackageNames: ["traefik"],
+      sourceUrl: "https://github.com/traefik/traefik",
+      changelogUrl: "https://github.com/traefik/traefik/releases",
+    },
+    {
+      matchPackageNames: ["coredns/coredns"],
+      sourceUrl: "https://github.com/coredns/coredns",
+      changelogUrl: "https://github.com/coredns/coredns/releases",
     },
     {
       matchPackageNames: ["lachlan443/backblaze-backup"],
