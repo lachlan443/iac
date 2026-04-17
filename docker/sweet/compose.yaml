@@ -210,7 +210,7 @@ services:
     restart: unless-stopped
 
   pulsarr:
-    image: lakker/pulsarr:0.15.1
+    image: lakker/pulsarr:0.15.3
     container_name: pulsarr
     networks:
       - aar
