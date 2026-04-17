@@ -10,6 +10,8 @@
     "github>lachlan443/iac//.renovate/groups.json5"
   ],
   "labels": ["renovate"],
+  "prConcurrentLimit": 0,
+  "prHourlyLimit": 0,
   "semanticCommits": "enabled",
   "customManagers": [
     {
