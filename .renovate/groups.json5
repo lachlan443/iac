@@ -2,10 +2,10 @@
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
   packageRules: [
     {
-      description: "Group linuxserver image updates together",
+      description: "Group beszel hub and agent together (shared versioning)",
       matchDatasources: ["docker"],
-      matchPackageNames: ["/lscr\\.io\\/linuxserver\\/.*/"],
-      groupName: "linuxserver images",
+      matchPackageNames: ["henrygd/beszel", "henrygd/beszel-agent"],
+      groupName: "beszel",
     },
   ],
 }
