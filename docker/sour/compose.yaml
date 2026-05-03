@@ -55,7 +55,7 @@ services:
       - sour
 
   archisteamfarm:
-    image: justarchi/archisteamfarm:6.3.4.2
+    image: justarchi/archisteamfarm:6.3.5.1
     container_name: asf
     network_mode: bridge
     environment:
