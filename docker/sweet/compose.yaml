@@ -260,7 +260,7 @@ services:
     restart: unless-stopped
 
   habits:
-    image: lachlan443/habits:2.2.0
+    image: lachlan443/habits:2.3.0
     container_name: habits
     volumes:
       - /home/lach/configs/habits:/config
