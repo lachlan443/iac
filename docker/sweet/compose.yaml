@@ -45,7 +45,8 @@ services:
   kometa:
     image: kometateam/kometa:v2.3.1
     container_name: kometa
-    network_mode: bridge
+    networks:
+      - aar
     environment:
       - PMM_CONFIG=${KOMETA_PMM_CONFIG}
       - KOMETA_TIME=${KOMETA_TIME}
