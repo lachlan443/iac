@@ -37,6 +37,12 @@
       "matchDatasources": ["docker"],
       "matchPackageNames": ["renovate/renovate"],
       "enabled": false
+    },
+    {
+      "description": "qbittorrent - only track plain semver tags, ignore Ubuntu base image tags",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["lscr.io/linuxserver/qbittorrent"],
+      "allowedVersions": "/^\\d+\\.\\d+\\.\\d+$/"
     }
   ]
 }
