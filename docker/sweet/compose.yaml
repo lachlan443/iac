@@ -204,11 +204,40 @@ services:
   homeassistant:
     image: ghcr.io/home-assistant/home-assistant:2026.4.4
     container_name: homeassistant
-    network_mode: host
+    networks:
+      - aar
+    ports:
+      - 8123:8123
     environment:
       - TZ=${TZ}
     volumes:
       - /home/lach/configs/homeassistant:/config
+    restart: unless-stopped
+
+  homeassistant-test:
+    image: ghcr.io/home-assistant/home-assistant:2026.1.2
+    container_name: homeassistant-test
+    networks:
+      - aar
+    ports:
+      - 8124:8123
+    environment:
+      - TZ=${TZ}
+    volumes:
+      - /home/lach/configs/homeassistant2:/config
+    restart: unless-stopped
+
+  logline:
+    build: /home/lach/projects/logline
+    container_name: logline
+    networks:
+      - aar
+    ports:
+      - 5959:5959
+    env_file:
+      - .env
+    volumes:
+      - /home/lach/configs/logline:/config
     restart: unless-stopped
 
   cleanuparr:
@@ -291,6 +320,8 @@ services:
     image: ghcr.io/maintainerr/maintainerr:3.11.1
     container_name: maintainerr
     user: 1000:1000
+    networks:
+      - aar
     environment:
       - TZ=${TZ}
 #      - BASE_PATH=/maintainerr # uncomment if you're serving maintainerr from a subdirectory
