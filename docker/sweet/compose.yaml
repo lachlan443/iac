@@ -214,19 +214,6 @@ services:
       - /home/lach/configs/homeassistant:/config
     restart: unless-stopped
 
-  homeassistant-test:
-    image: ghcr.io/home-assistant/home-assistant:2026.5.2
-    container_name: homeassistant-test
-    networks:
-      - aar
-    ports:
-      - 8124:8123
-    environment:
-      - TZ=${TZ}
-    volumes:
-      - /home/lach/configs/homeassistant2:/config
-    restart: unless-stopped
-
   logline:
     build: /home/lach/projects/logline
     container_name: logline
