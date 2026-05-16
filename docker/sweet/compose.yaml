@@ -59,7 +59,7 @@ services:
     restart: unless-stopped
 
   disk-stats:
-    image: python:3.12-alpine3.23
+    image: python:3.14-alpine3.23
     container_name: kometa-sidecar-disk-stats
     environment:
       - TZ=${TZ}
