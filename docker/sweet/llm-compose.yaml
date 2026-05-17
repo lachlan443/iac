@@ -1,0 +1,50 @@
+name: llm
+
+services:
+  llama-server:
+    image: ghcr.io/ggml-org/llama.cpp:server-vulkan-b4740
+    container_name: llama-server
+    devices:
+      - /dev/dri:/dev/dri
+    group_add:
+      - "993"
+      - "44"
+    volumes:
+      - /home/lach/llm-models:/models:ro
+    command: >
+      -m /models/Qwen_Qwen3-4B-Instruct-2507-Q4_K_M.gguf
+      -c 4096
+      --host 0.0.0.0
+      --port 8086
+      -ngl 99
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8086/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    ports:
+      - "8086:8086"
+    restart: unless-stopped
+
+  kokoro:
+    image: ghcr.io/remsky/kokoro-fastapi-cpu:v0.3.0
+    container_name: kokoro
+    ports:
+      - "8880:8880"
+    restart: unless-stopped
+
+  open-webui:
+    image: openwebui/open-webui:0.9.5
+    container_name: open-webui
+    depends_on:
+      - llama-server
+      - kokoro
+    env_file:
+      - .env.llm
+    environment:
+      - OPENAI_API_BASE_URL=http://llama-server:8086/v1
+    volumes:
+      - /home/lach/configs/open-webui:/app/backend/data
+    ports:
+      - "8088:8080"
+    restart: unless-stopped

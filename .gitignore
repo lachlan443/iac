@@ -1,6 +1,7 @@
 # Secrets - never commit
 docker/.env
 docker/**/.env
+docker/**/.env.*
 .env
 
 # Container config data - never commit

@@ -23,14 +23,16 @@ jobs:
         with:
           filters: |
             sweet:
-              - 'docker/sweet/**'
+              - 'docker/sweet/compose.yaml'
+            sweet_llm:
+              - 'docker/sweet/llm-compose.yaml'
             sour:
               - 'docker/sour/**'
 
   deploy-sweet:
     name: Deploy to sweet
     needs: changes
-    if: needs.changes.outputs.sweet == 'true' || github.event_name == 'workflow_dispatch'
+    if: needs.changes.outputs.sweet == 'true' || needs.changes.outputs.sweet_llm == 'true' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     concurrency:
       group: deploy-sweet
@@ -55,12 +57,17 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=accept-new lach@sweet "mkdir -p /home/lach/docker"
           rsync -az docker/sweet/compose.yaml lach@sweet:/home/lach/docker/compose.yaml
+          rsync -az docker/sweet/llm-compose.yaml lach@sweet:/home/lach/docker/llm-compose.yaml
 
       - name: Pull images
-        run: ssh lach@sweet "docker compose -f /home/lach/docker/compose.yaml pull"
+        run: |
+          ssh lach@sweet "docker compose -f /home/lach/docker/compose.yaml pull"
+          ssh lach@sweet "docker compose -f /home/lach/docker/llm-compose.yaml pull"
 
       - name: Deploy
-        run: ssh lach@sweet "docker compose -f /home/lach/docker/compose.yaml up -d --remove-orphans"
+        run: |
+          ssh lach@sweet "docker compose -f /home/lach/docker/compose.yaml up -d --remove-orphans"
+          ssh lach@sweet "docker compose -f /home/lach/docker/llm-compose.yaml up -d --remove-orphans"
 
       - name: Prune unused images
         run: ssh lach@sweet "docker image prune -a -f"

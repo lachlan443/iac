@@ -2,6 +2,13 @@
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
   packageRules: [
     {
+      "description": "llama.cpp - version by build number in server-vulkan-bXXXX tags",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["ghcr.io/ggml-org/llama.cpp"],
+      "versioning": "regex:^server-vulkan-b(?<major>\\d+)$",
+      "allowedVersions": "/^server-vulkan-b\\d+$/"
+    },
+    {
       "description": "ASF - use 4-part versioning and ignore pre-releases",
       "matchDatasources": ["github-releases"],
       "matchPackageNames": ["JustArchiNET/ArchiSteamFarm"],
