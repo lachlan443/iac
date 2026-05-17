@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       sweet: ${{ steps.filter.outputs.sweet }}
+      sweet_llm: ${{ steps.filter.outputs.sweet_llm }}
       sour: ${{ steps.filter.outputs.sour }}
     steps:
       - name: Checkout
