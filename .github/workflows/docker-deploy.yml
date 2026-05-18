@@ -12,7 +12,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       sweet: ${{ steps.filter.outputs.sweet }}
-      sweet_llm: ${{ steps.filter.outputs.sweet_llm }}
       sour: ${{ steps.filter.outputs.sour }}
     steps:
       - name: Checkout
@@ -24,16 +23,14 @@ jobs:
         with:
           filters: |
             sweet:
-              - 'docker/sweet/compose.yaml'
-            sweet_llm:
-              - 'docker/sweet/llm-compose.yaml'
+              - 'docker/sweet/**'
             sour:
               - 'docker/sour/**'
 
   deploy-sweet:
     name: Deploy to sweet
     needs: changes
-    if: needs.changes.outputs.sweet == 'true' || needs.changes.outputs.sweet_llm == 'true' || github.event_name == 'workflow_dispatch'
+    if: needs.changes.outputs.sweet == 'true' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     concurrency:
       group: deploy-sweet
@@ -54,21 +51,18 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Rsync compose
+      - name: Rsync compose files
         run: |
           ssh -o StrictHostKeyChecking=accept-new lach@sweet "mkdir -p /home/lach/docker"
-          rsync -az docker/sweet/compose.yaml lach@sweet:/home/lach/docker/compose.yaml
-          rsync -az docker/sweet/llm-compose.yaml lach@sweet:/home/lach/docker/llm-compose.yaml
+          rsync -az docker/sweet/ lach@sweet:/home/lach/docker/
 
       - name: Pull images
         run: |
-          ssh lach@sweet "docker compose -f /home/lach/docker/compose.yaml pull"
-          ssh lach@sweet "docker compose -f /home/lach/docker/llm-compose.yaml pull"
+          ssh lach@sweet "for f in /home/lach/docker/*.yaml; do docker compose -f \"\$f\" pull; done"
 
       - name: Deploy
         run: |
-          ssh lach@sweet "docker compose -f /home/lach/docker/compose.yaml up -d --remove-orphans"
-          ssh lach@sweet "docker compose -f /home/lach/docker/llm-compose.yaml up -d --remove-orphans"
+          ssh lach@sweet "for f in /home/lach/docker/*.yaml; do docker compose -f \"\$f\" up -d --remove-orphans; done"
 
       - name: Prune unused images
         run: ssh lach@sweet "docker image prune -a -f"
@@ -97,16 +91,18 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Rsync compose
+      - name: Rsync compose files
         run: |
           ssh -o StrictHostKeyChecking=accept-new lach@sour "mkdir -p /home/lach/docker"
-          rsync -az docker/sour/compose.yaml lach@sour:/home/lach/docker/compose.yaml
+          rsync -az docker/sour/ lach@sour:/home/lach/docker/
 
       - name: Pull images
-        run: ssh lach@sour "docker compose -f /home/lach/docker/compose.yaml pull"
+        run: |
+          ssh lach@sour "for f in /home/lach/docker/*.yaml; do docker compose -f \"\$f\" pull; done"
 
       - name: Deploy
-        run: ssh lach@sour "docker compose -f /home/lach/docker/compose.yaml up -d --remove-orphans"
+        run: |
+          ssh lach@sour "for f in /home/lach/docker/*.yaml; do docker compose -f \"\$f\" up -d --remove-orphans; done"
 
       - name: Prune unused images
         run: ssh lach@sour "docker image prune -a -f"
