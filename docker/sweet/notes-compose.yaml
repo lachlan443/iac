@@ -6,6 +6,7 @@ services:
     container_name: trilium
     environment:
       - TRILIUM_DATA_DIR=/home/node/trilium-data
+      - TRILIUM_TRUSTED_REVERSE_PROXY=true
     volumes:
       - /home/lach/configs/trilium:/home/node/trilium-data
       - /etc/timezone:/etc/timezone:ro
