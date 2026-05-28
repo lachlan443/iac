@@ -2,7 +2,7 @@ name: llm
 
 services:
   llama-server:
-    image: ghcr.io/ggml-org/llama.cpp:server-vulkan-b4740
+    image: ghcr.io/ggml-org/llama.cpp:server-vulkan-b9354
     container_name: llama-server
     devices:
       - /dev/dri:/dev/dri
