@@ -1,0 +1,287 @@
+# Supabase self-hosted stack for Habo habits tracker (Flutter, iOS/Android).
+#
+# Omitted from the full 13-service stack:
+#   realtime  — WebSocket push; Habo sync is blob-based, no WebSocket needed
+#   imgproxy  — Image transformation; disabled in storage
+#   supavisor — Connection pooler; unnecessary at this scale (single app, no direct DB connections)
+#   kong      — API gateway; replaced by Traefik path-based routing
+
+name: supabase
+
+services:
+  supabase-db:
+    image: supabase/postgres:15.8.1.085
+    container_name: supabase-db
+    restart: unless-stopped
+    networks:
+      - supabase
+    volumes:
+      - /home/lach/configs/supabase/db/webhooks.sql:/docker-entrypoint-initdb.d/init-scripts/98-webhooks.sql:Z
+      - /home/lach/configs/supabase/db/roles.sql:/docker-entrypoint-initdb.d/init-scripts/99-roles.sql:Z
+      - /home/lach/configs/supabase/db/jwt.sql:/docker-entrypoint-initdb.d/init-scripts/99-jwt.sql:Z
+      - /home/lach/configs/supabase/db/_supabase.sql:/docker-entrypoint-initdb.d/migrations/97-_supabase.sql:Z
+      - /home/lach/configs/supabase/db/logs.sql:/docker-entrypoint-initdb.d/migrations/99-logs.sql:Z
+      - /home/lach/configs/supabase/db/data:/var/lib/postgresql/data:Z
+      - /home/lach/configs/supabase/db/pgsodium:/etc/postgresql-custom
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    environment:
+      POSTGRES_HOST: /var/run/postgresql
+      PGPORT: 5432
+      POSTGRES_PORT: 5432
+      PGPASSWORD: ${SUPABASE_POSTGRES_PASSWORD}
+      POSTGRES_PASSWORD: ${SUPABASE_POSTGRES_PASSWORD}
+      PGDATABASE: postgres
+      POSTGRES_DB: postgres
+      JWT_SECRET: ${SUPABASE_JWT_SECRET}
+      JWT_EXP: 3600
+    command:
+      - postgres
+      - -c
+      - config_file=/etc/postgresql/postgresql.conf
+      - -c
+      - log_min_messages=fatal
+
+  supabase-auth:
+    image: supabase/gotrue:v2.186.0
+    container_name: supabase-auth
+    restart: unless-stopped
+    networks:
+      - supabase
+    ports:
+      - 9999:9999
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9999/health"]
+      timeout: 5s
+      interval: 5s
+      retries: 3
+    depends_on:
+      supabase-db:
+        condition: service_healthy
+    environment:
+      GOTRUE_API_HOST: 0.0.0.0
+      GOTRUE_API_PORT: 9999
+      API_EXTERNAL_URL: ${SUPABASE_EXTERNAL_URL}
+      GOTRUE_DB_DRIVER: postgres
+      GOTRUE_DB_DATABASE_URL: postgres://supabase_auth_admin:${SUPABASE_POSTGRES_PASSWORD}@supabase-db:5432/postgres
+      GOTRUE_SITE_URL: ${SUPABASE_SITE_URL}
+      GOTRUE_DISABLE_SIGNUP: "false"
+      GOTRUE_JWT_ADMIN_ROLES: service_role
+      GOTRUE_JWT_AUD: authenticated
+      GOTRUE_JWT_DEFAULT_GROUP_NAME: authenticated
+      GOTRUE_JWT_EXP: 3600
+      GOTRUE_JWT_SECRET: ${SUPABASE_JWT_SECRET}
+      GOTRUE_JWT_ISSUER: ${SUPABASE_EXTERNAL_URL}/auth/v1
+      GOTRUE_EXTERNAL_EMAIL_ENABLED: "true"
+      GOTRUE_MAILER_AUTOCONFIRM: "true"
+      GOTRUE_EXTERNAL_PHONE_ENABLED: "false"
+      GOTRUE_SMS_AUTOCONFIRM: "false"
+
+  supabase-rest:
+    image: postgrest/postgrest:v14.8
+    container_name: supabase-rest
+    restart: unless-stopped
+    networks:
+      - supabase
+    ports:
+      - 3000:3000
+    depends_on:
+      supabase-db:
+        condition: service_healthy
+    environment:
+      PGRST_DB_URI: postgres://authenticator:${SUPABASE_POSTGRES_PASSWORD}@supabase-db:5432/postgres
+      PGRST_DB_SCHEMAS: public,storage,graphql_public
+      PGRST_DB_MAX_ROWS: 1000
+      PGRST_DB_EXTRA_SEARCH_PATH: public
+      PGRST_DB_ANON_ROLE: anon
+      PGRST_JWT_SECRET: ${SUPABASE_JWT_SECRET}
+      PGRST_DB_USE_LEGACY_GUCS: "false"
+      PGRST_APP_SETTINGS_JWT_SECRET: ${SUPABASE_JWT_SECRET}
+      PGRST_APP_SETTINGS_JWT_EXP: 3600
+    command: ["postgrest"]
+
+  supabase-storage:
+    image: supabase/storage-api:v1.48.26
+    container_name: supabase-storage
+    restart: unless-stopped
+    networks:
+      - supabase
+    ports:
+      - 5000:5000
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5000/status"]
+      timeout: 5s
+      interval: 5s
+      retries: 3
+      start_period: 10s
+    depends_on:
+      supabase-db:
+        condition: service_healthy
+      supabase-rest:
+        condition: service_started
+    volumes:
+      - /home/lach/configs/supabase/storage:/var/lib/storage:z
+    environment:
+      ANON_KEY: ${SUPABASE_ANON_KEY}
+      SERVICE_KEY: ${SUPABASE_SERVICE_ROLE_KEY}
+      POSTGREST_URL: http://supabase-rest:3000
+      AUTH_JWT_SECRET: ${SUPABASE_JWT_SECRET}
+      DATABASE_URL: postgres://supabase_storage_admin:${SUPABASE_POSTGRES_PASSWORD}@supabase-db:5432/postgres
+      STORAGE_PUBLIC_URL: ${SUPABASE_EXTERNAL_URL}
+      REQUEST_ALLOW_X_FORWARDED_PATH: "true"
+      FILE_SIZE_LIMIT: 52428800
+      STORAGE_BACKEND: file
+      GLOBAL_S3_BUCKET: stub
+      FILE_STORAGE_BACKEND_PATH: /var/lib/storage
+      TENANT_ID: stub
+      REGION: local
+      ENABLE_IMAGE_TRANSFORMATION: "false"
+
+  supabase-analytics:
+    image: supabase/logflare:1.36.1
+    container_name: supabase-analytics
+    restart: unless-stopped
+    networks:
+      - supabase
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sSfL -o /dev/null http://localhost:4000/health"]
+      timeout: 5s
+      interval: 5s
+      retries: 10
+    depends_on:
+      supabase-db:
+        condition: service_healthy
+    environment:
+      LOGFLARE_NODE_HOST: 127.0.0.1
+      DB_USERNAME: supabase_admin
+      DB_DATABASE: _supabase
+      DB_HOSTNAME: supabase-db
+      DB_PORT: 5432
+      DB_PASSWORD: ${SUPABASE_POSTGRES_PASSWORD}
+      DB_SCHEMA: _analytics
+      LOGFLARE_PUBLIC_ACCESS_TOKEN: ${SUPABASE_LOGFLARE_PUBLIC_TOKEN}
+      LOGFLARE_PRIVATE_ACCESS_TOKEN: ${SUPABASE_LOGFLARE_PRIVATE_TOKEN}
+      LOGFLARE_SINGLE_TENANT: "true"
+      LOGFLARE_SUPABASE_MODE: "true"
+      POSTGRES_BACKEND_URL: postgresql://supabase_admin:${SUPABASE_POSTGRES_PASSWORD}@supabase-db:5432/_supabase
+      POSTGRES_BACKEND_SCHEMA: _analytics
+      LOGFLARE_FEATURE_FLAG_OVERRIDE: multibackend=true
+
+  supabase-vector:
+    image: timberio/vector:0.53.0-alpine
+    container_name: supabase-vector
+    restart: unless-stopped
+    networks:
+      - supabase
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9001/health"]
+      timeout: 5s
+      interval: 5s
+      retries: 3
+    depends_on:
+      supabase-analytics:
+        condition: service_healthy
+    volumes:
+      - /home/lach/configs/supabase/logs/vector.yml:/etc/vector/vector.yml:ro,z
+      - /var/run/docker.sock:/var/run/docker.sock:ro,z
+    environment:
+      LOGFLARE_PUBLIC_ACCESS_TOKEN: ${SUPABASE_LOGFLARE_PUBLIC_TOKEN}
+    command: ["--config", "/etc/vector/vector.yml"]
+    security_opt:
+      - "label=disable"
+
+  supabase-meta:
+    image: supabase/postgres-meta:v0.96.3
+    container_name: supabase-meta
+    restart: unless-stopped
+    networks:
+      - supabase
+    depends_on:
+      supabase-db:
+        condition: service_healthy
+    environment:
+      PG_META_PORT: 8080
+      PG_META_DB_HOST: supabase-db
+      PG_META_DB_PORT: 5432
+      PG_META_DB_NAME: postgres
+      PG_META_DB_USER: supabase_admin
+      PG_META_DB_PASSWORD: ${SUPABASE_POSTGRES_PASSWORD}
+      CRYPTO_KEY: ${SUPABASE_PG_META_CRYPTO_KEY}
+
+  supabase-studio:
+    image: supabase/studio:2026.04.27-sha-5f60601
+    container_name: supabase-studio
+    restart: unless-stopped
+    networks:
+      - supabase
+    ports:
+      - 3001:3000
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"fetch('http://localhost:3000/api/platform/profile').then((r) => {if (r.status !== 200) throw new Error(r.status)})\""]
+      timeout: 10s
+      interval: 5s
+      retries: 3
+    depends_on:
+      supabase-analytics:
+        condition: service_healthy
+    volumes:
+      - /home/lach/configs/supabase/studio/snippets:/app/snippets:Z
+      - /home/lach/configs/supabase/functions:/app/edge-functions:Z
+    environment:
+      HOSTNAME: "0.0.0.0"
+      STUDIO_PG_META_URL: http://supabase-meta:8080
+      POSTGRES_PORT: 5432
+      POSTGRES_HOST: supabase-db
+      POSTGRES_DB: postgres
+      POSTGRES_PASSWORD: ${SUPABASE_POSTGRES_PASSWORD}
+      PG_META_CRYPTO_KEY: ${SUPABASE_PG_META_CRYPTO_KEY}
+      PGRST_DB_SCHEMAS: public,storage,graphql_public
+      PGRST_DB_MAX_ROWS: 1000
+      PGRST_DB_EXTRA_SEARCH_PATH: public
+      DEFAULT_ORGANIZATION_NAME: ${SUPABASE_STUDIO_ORG}
+      DEFAULT_PROJECT_NAME: ${SUPABASE_STUDIO_PROJECT}
+      SUPABASE_URL: ${SUPABASE_EXTERNAL_URL}
+      SUPABASE_PUBLIC_URL: ${SUPABASE_EXTERNAL_URL}
+      SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY}
+      SUPABASE_SERVICE_KEY: ${SUPABASE_SERVICE_ROLE_KEY}
+      AUTH_JWT_SECRET: ${SUPABASE_JWT_SECRET}
+      LOGFLARE_API_KEY: ${SUPABASE_LOGFLARE_PUBLIC_TOKEN}
+      LOGFLARE_PUBLIC_ACCESS_TOKEN: ${SUPABASE_LOGFLARE_PUBLIC_TOKEN}
+      LOGFLARE_PRIVATE_ACCESS_TOKEN: ${SUPABASE_LOGFLARE_PRIVATE_TOKEN}
+      LOGFLARE_URL: http://supabase-analytics:4000
+      NEXT_PUBLIC_ENABLE_LOGS: "true"
+      NEXT_ANALYTICS_BACKEND_PROVIDER: postgres
+
+  supabase-functions:
+    image: supabase/edge-runtime:v1.71.2
+    container_name: supabase-functions
+    restart: unless-stopped
+    networks:
+      - supabase
+    ports:
+      - 8083:8083
+    depends_on:
+      supabase-db:
+        condition: service_healthy
+    volumes:
+      - /home/lach/configs/supabase/functions:/home/deno/functions:Z
+      - supabase-deno-cache:/root/.cache/deno
+    environment:
+      JWT_SECRET: ${SUPABASE_JWT_SECRET}
+      SUPABASE_URL: ${SUPABASE_EXTERNAL_URL}
+      SUPABASE_PUBLIC_URL: ${SUPABASE_EXTERNAL_URL}
+      SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY}
+      SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY}
+      SUPABASE_DB_URL: postgresql://postgres:${SUPABASE_POSTGRES_PASSWORD}@supabase-db:5432/postgres
+      VERIFY_JWT: "true"
+    command: ["start", "--main-service", "/home/deno/functions/main"]
+
+networks:
+  supabase:
+    name: supabase
+
+volumes:
+  supabase-deno-cache:
