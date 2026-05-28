@@ -22,7 +22,7 @@ services:
       - /home/lach/configs/supabase/db/_supabase.sql:/docker-entrypoint-initdb.d/migrations/97-_supabase.sql:Z
       - /home/lach/configs/supabase/db/logs.sql:/docker-entrypoint-initdb.d/migrations/99-logs.sql:Z
       - /home/lach/configs/supabase/db/data:/var/lib/postgresql/data:Z
-      - /home/lach/configs/supabase/db/pgsodium:/etc/postgresql-custom
+      - supabase-db-config:/etc/postgresql-custom
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "postgres", "-h", "localhost"]
       interval: 5s
@@ -284,4 +284,5 @@ networks:
     name: supabase
 
 volumes:
+  supabase-db-config:
   supabase-deno-cache:

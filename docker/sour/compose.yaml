@@ -83,3 +83,4 @@ services:
 networks:
   sour:
     name: sour
+    external: true
