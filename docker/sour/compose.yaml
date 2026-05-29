@@ -71,7 +71,7 @@ services:
       - proxy
 
   pocket-id:
-    image: ghcr.io/stonith404/pocket-id:v2.7.0
+    image: ghcr.io/pocket-id/pocket-id:v2
     container_name: pocket-id
     env_file:
       - /home/lach/configs/pocket-id/.env
@@ -80,6 +80,12 @@ services:
     restart: unless-stopped
     networks:
       - proxy
+    healthcheck:
+      test: [CMD, /app/pocket-id, healthcheck]
+      interval: 1m30s
+      timeout: 5s
+      retries: 2
+      start_period: 10s
 
   backup:
     image: lachlan443/backblaze-backup:1.2.0
