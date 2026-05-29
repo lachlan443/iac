@@ -87,6 +87,15 @@ services:
       retries: 2
       start_period: 10s
 
+  oauth2-proxy:
+    image: quay.io/oauth2-proxy/oauth2-proxy:v7.15.2
+    container_name: oauth2-proxy
+    env_file:
+      - /home/lach/configs/oauth2-proxy/.env
+    restart: unless-stopped
+    networks:
+      - proxy
+
   backup:
     image: lachlan443/backblaze-backup:1.2.0
     container_name: backup
