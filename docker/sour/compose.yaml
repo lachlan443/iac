@@ -28,7 +28,7 @@ services:
     restart: unless-stopped
 
   cloudflared:
-    image: cloudflare/cloudflared:2026.5.0
+    image: cloudflare/cloudflared:2026.5.2
     container_name: cloudflared
     command: tunnel --no-autoupdate run --token ${CLOUDFLARED_TUNNEL_TOKEN}
     restart: unless-stopped
