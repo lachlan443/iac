@@ -201,4 +201,3 @@ services:
 networks:
   media:
     name: media
-    external: true

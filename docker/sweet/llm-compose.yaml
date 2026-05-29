@@ -63,4 +63,3 @@ services:
 networks:
   llm:
     name: llm
-    external: true

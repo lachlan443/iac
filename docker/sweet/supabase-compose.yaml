@@ -274,7 +274,6 @@ services:
 networks:
   supabase:
     name: supabase
-    external: true
 
 volumes:
   supabase-db-config:
