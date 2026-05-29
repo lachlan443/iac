@@ -71,7 +71,7 @@ services:
       - proxy
 
   pocket-id:
-    image: ghcr.io/pocket-id/pocket-id:v2
+    image: ghcr.io/pocket-id/pocket-id:v2.7.0
     container_name: pocket-id
     env_file:
       - /home/lach/configs/pocket-id/.env
