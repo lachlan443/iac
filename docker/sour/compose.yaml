@@ -94,6 +94,13 @@ services:
       retries: 2
       start_period: 10s
 
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    restart: unless-stopped
+    networks:
+      - proxy
+
   oauth2-proxy:
     image: quay.io/oauth2-proxy/oauth2-proxy:v7.15.2
     container_name: oauth2-proxy
@@ -102,6 +109,8 @@ services:
     ports:
       - "4180:4180"
     restart: unless-stopped
+    depends_on:
+      - redis
     networks:
       - proxy
 
