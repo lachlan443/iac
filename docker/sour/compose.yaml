@@ -5,7 +5,10 @@ services:
     image: traefik:v3.7
     container_name: traefik
     networks:
-      - proxy
+      proxy:
+        aliases:
+          - auth.lbanks.dev
+          - oauth.lbanks.dev
     ports:
       - "80:80"
       - "443:443"
