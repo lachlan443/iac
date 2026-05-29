@@ -120,8 +120,7 @@ services:
   plex:
     image: lscr.io/linuxserver/plex:1.43.2
     container_name: plex
-    networks:
-      - media
+    network_mode: host
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
