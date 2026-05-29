@@ -95,6 +95,8 @@ services:
     container_name: oauth2-proxy
     env_file:
       - /home/lach/configs/oauth2-proxy/.env
+    ports:
+      - "4180:4180"
     restart: unless-stopped
     networks:
       - proxy
