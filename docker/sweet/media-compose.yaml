@@ -104,7 +104,7 @@ services:
     restart: unless-stopped
 
   disk-stats:
-    image: lachlan443/kometa-disk-stats:latest
+    build: /home/lach/projects/kometa-disk-usage
     container_name: kometa-sidecar-disk-stats
     environment:
       - TZ=${TZ}
