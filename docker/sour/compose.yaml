@@ -55,6 +55,10 @@ services:
   beszel:
     image: henrygd/beszel:0.18.7
     container_name: beszel
+    ports:
+      - "8090:8090"
+    env_file:
+      - /home/lach/configs/beszel/.env
     volumes:
       - /home/lach/configs/beszel:/beszel_data
     restart: unless-stopped
