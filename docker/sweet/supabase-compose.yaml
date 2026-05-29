@@ -6,8 +6,7 @@
 #   supavisor — Connection pooler; unnecessary at this scale (single app, no direct DB connections)
 #   kong      — API gateway; replaced by Traefik path-based routing
 #
-# Run with:
-#   docker compose -f supabase-compose.yaml --env-file .env.supabase up -d
+# Vars prefixed SUPABASE_* live in the shared .env alongside all other stacks.
 
 name: supabase
 
