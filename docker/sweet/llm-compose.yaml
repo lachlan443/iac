@@ -4,6 +4,8 @@ services:
   llama-server:
     image: ghcr.io/ggml-org/llama.cpp:server-vulkan-b9354
     container_name: llama-server
+    networks:
+      - llm
     devices:
       - /dev/dri:/dev/dri
     group_add:
@@ -22,20 +24,20 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
-    ports:
-      - "8086:8086"
     restart: unless-stopped
 
   kokoro:
     image: ghcr.io/remsky/kokoro-fastapi-cpu:v0.3.0
     container_name: kokoro
-    ports:
-      - "8880:8880"
+    networks:
+      - llm
     restart: unless-stopped
 
   open-webui:
     image: openwebui/open-webui:0.9.5
     container_name: open-webui
+    networks:
+      - llm
     depends_on:
       - llama-server
       - kokoro
@@ -45,6 +47,20 @@ services:
       - OPENAI_API_BASE_URL=http://llama-server:8086/v1
     volumes:
       - /home/lach/configs/open-webui:/app/backend/data
-    ports:
-      - "8088:8080"
     restart: unless-stopped
+
+  homeassistant:
+    image: ghcr.io/home-assistant/home-assistant:2026.5.2
+    container_name: homeassistant
+    networks:
+      - llm
+    environment:
+      - TZ=${TZ}
+    volumes:
+      - /home/lach/configs/homeassistant:/config
+    restart: unless-stopped
+
+networks:
+  llm:
+    name: llm
+    external: true

@@ -58,7 +58,7 @@ jobs:
 
       - name: Pull images
         run: |
-          ssh lach@sweet "for f in /home/lach/docker/*.yaml; do docker compose -f \"\$f\" pull; done"
+          ssh lach@sweet "for f in /home/lach/docker/*.yaml; do docker compose -f \"\$f\" pull --policy missing; done"
 
       - name: Deploy
         run: |
@@ -98,7 +98,7 @@ jobs:
 
       - name: Pull images
         run: |
-          ssh lach@sour "for f in /home/lach/docker/*.yaml; do docker compose -f \"\$f\" pull; done"
+          ssh lach@sour "for f in /home/lach/docker/*.yaml; do docker compose -f \"\$f\" pull --policy missing; done"
 
       - name: Deploy
         run: |

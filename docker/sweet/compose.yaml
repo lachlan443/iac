@@ -1,138 +1,39 @@
+name: core
+
 services:
   traefik:
     image: traefik:v3.7
     container_name: traefik
-    network_mode: host
+    networks:
+      - proxy
+      - media
+      - llm
+      - supabase
     environment:
       - CF_DNS_API_TOKEN=${CF_DNS_API_TOKEN}
     volumes:
       - /home/lach/configs/traefik:/etc/traefik
     restart: unless-stopped
 
-  sonarr:
-    image: lscr.io/linuxserver/sonarr:4.0.17
-    container_name: sonarr
+  tinyauth:
+    image: ghcr.io/steveiliop56/tinyauth:latest
+    container_name: tinyauth
     networks:
-      - aar
+      - proxy
     environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
-    volumes:
-      - /home/lach/configs/sonarr:/config
-      - /data:/data
-    ports:
-      - 8989:8989
+      - APP_URL=${TINYAUTH_APP_URL}
+      - SECRET=${TINYAUTH_SECRET}
+      - USERS=${TINYAUTH_USERS}
     restart: unless-stopped
 
-  radarr:
-    image: lscr.io/linuxserver/radarr:6.1.1
-    container_name: radarr
+  cloudflared:
+    image: cloudflare/cloudflared:2026.5.0
+    container_name: cloudflared
     networks:
-      - aar
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
-    volumes:
-      - /home/lach/configs/radarr:/config
-      - /data:/data
-    ports:
-      - 7878:7878
-    restart: unless-stopped
-
-
-  kometa:
-    image: kometateam/kometa:v2.3.1
-    container_name: kometa
-    networks:
-      - aar
-    environment:
-      - PMM_CONFIG=${KOMETA_PMM_CONFIG}
-      - KOMETA_TIME=${KOMETA_TIME}
-      - PLEX_UID=${PLEX_UID}
-      - PLEX_GID=${PLEX_GID}
-      - KOMETA_RUN=${KOMETA_RUN}
-      - TZ=${TZ}
-    volumes:
-      - /home/lach/configs/kometa:/config
-    restart: unless-stopped
-
-  disk-stats:
-    image: lachlan443/kometa-disk-stats:latest
-    container_name: kometa-sidecar-disk-stats
+      - proxy
     environment:
       - TZ=${TZ}
-      - KOMETA_TIME=${DISK_STATS_SCHEDULE}
-      - DATA_PATH=/data
-      - MOVIES_PATH=/data/media/movies
-      - TV_PATH=/data/media/tv
-    volumes:
-      - /home/lach/configs/kometa:/config
-      - /data:/data:ro
-    restart: unless-stopped
-
-  prowlarr:
-    image: lscr.io/linuxserver/prowlarr:2.3.5
-    container_name: prowlarr
-    networks:
-      - aar
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
-    volumes:
-      - /home/lach/configs/prowlarr2:/config
-    ports:
-      - 9696:9696
-    restart: unless-stopped
-
-  qbittorrent:
-    image: lscr.io/linuxserver/qbittorrent:5.2.0
-    container_name: qbittorrent
-    networks:
-      - aar
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
-      - WEBUI_PORT=${QBITTORRENT_WEBUI_PORT}
-      - TORRENTING_PORT=${QBITTORRENT_TORRENTING_PORT}
-    volumes:
-      - /home/lach/configs/qBittorrent:/config
-      - /data/torrents:/data/torrents:rw
-    ports:
-      - 8082:8082
-      - 6881:6881
-      - 6881:6881/udp
-    restart: unless-stopped
-
-  sabnzbd:
-    image: lscr.io/linuxserver/sabnzbd:5.0.3
-    container_name: sabnzbd
-    networks:
-      - aar
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
-    volumes:
-      - /home/lach/configs/SABnzbd:/config
-      - /data/usenet:/data/usenet:rw
-    ports:
-      - 8084:8084
-    restart: unless-stopped
-
-  recyclarr:
-    image: ghcr.io/recyclarr/recyclarr:8.6.0
-    container_name: recyclarr
-    user: 1000:1000
-    networks:
-      - aar
-    volumes:
-      - /home/lach/configs/recyclarr:/config
-    environment:
-      - TZ=${TZ}
+    command: tunnel --no-autoupdate run --token ${CLOUDFLARED_TUNNEL_TOKEN}
     restart: unless-stopped
 
   beszel-agent:
@@ -150,114 +51,12 @@ services:
     cap_add:
       - SYS_RAWIO
       - SYS_ADMIN
-    # Delay start to wait for Tailscale to connect before attempting to reach the hub
     entrypoint: ["/bin/sh", "-c", "sleep 60 && exec /agent"]
     environment:
       LISTEN: ${BESZEL_LISTEN}
       KEY: ${BESZEL_KEY}
       TOKEN: ${BESZEL_TOKEN}
       HUB_URL: ${BESZEL_HUB_URL}
-
-  plex:
-    image: lscr.io/linuxserver/plex:1.43.2
-    container_name: plex
-    network_mode: host
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
-      - VERSION=${PLEX_VERSION}
-    volumes:
-      - /home/lach/configs/plex:/config
-      - /data/media/tv:/tv
-      - /data/media/movies:/movies
-    devices:
-      - /dev/dri:/dev/dri
-    restart: unless-stopped
-
-  cloudflared:
-    image: cloudflare/cloudflared:2026.5.0
-    container_name: cloudflared
-    networks:
-      - aar
-      - monitoring
-    environment:
-      - TZ=${TZ}
-    command: tunnel --no-autoupdate run --token ${CLOUDFLARED_TUNNEL_TOKEN}
-    restart: unless-stopped
-
-  flaresolverr:
-    image: flaresolverr/flaresolverr:v3.5.0
-    container_name: flaresolverr
-    networks:
-      - aar
-    environment:
-      - TZ=${TZ}
-    ports:
-      - 8191:8191
-    restart: unless-stopped
-
-  homeassistant:
-    image: ghcr.io/home-assistant/home-assistant:2026.5.2
-    container_name: homeassistant
-    networks:
-      - aar
-    ports:
-      - 8123:8123
-    environment:
-      - TZ=${TZ}
-    volumes:
-      - /home/lach/configs/homeassistant:/config
-    restart: unless-stopped
-
-  logline:
-    build: /home/lach/projects/logline
-    container_name: logline
-    networks:
-      - aar
-    ports:
-      - 5959:5959
-    env_file:
-      - .env
-    volumes:
-      - /home/lach/configs/logline:/config
-    restart: unless-stopped
-
-  cleanuparr:
-    image: ghcr.io/cleanuparr/cleanuparr:2.9.13
-    container_name: cleanuparr
-    networks:
-      - aar
-    environment:
-      - PORT=${CLEANUPARR_PORT}
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - UMASK=${CLEANUPARR_UMASK}
-      - TZ=${TZ}
-    volumes:
-      - /home/lach/configs/cleanuparr:/config
-    ports:
-      - 11011:11011
-    restart: unless-stopped
-
-  pulsarr:
-    image: lakker/pulsarr:0.15.5
-    container_name: pulsarr
-    networks:
-      - aar
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
-      - baseUrl=${PULSARR_BASE_URL}
-      - port=${PULSARR_PORT}
-      - logLevel=${PULSARR_LOG_LEVEL}
-      - NODE_ARGS=${PULSARR_NODE_ARGS}
-    volumes:
-      - /home/lach/configs/pulsarr:/app/data
-    ports:
-      - 3003:3003
-    restart: unless-stopped
 
   backup:
     image: lachlan443/backblaze-backup:1.2.0
@@ -293,35 +92,32 @@ services:
   habits:
     image: lachlan443/habits:2.3.0
     container_name: habits
+    networks:
+      - proxy
     volumes:
       - /home/lach/configs/habits:/config
-    ports:
-      - 7160:7160
     restart: unless-stopped
 
-  maintainerr:
-    image: ghcr.io/maintainerr/maintainerr:3.11.1
-    container_name: maintainerr
-    user: 1000:1000
+  trilium:
+    image: triliumnext/trilium:v0.103.0
+    container_name: trilium
     networks:
-      - aar
+      - proxy
     environment:
-      - TZ=${TZ}
-#      - BASE_PATH=/maintainerr # uncomment if you're serving maintainerr from a subdirectory
-#      - UI_HOSTNAME=:: # uncomment if you want to listen on IPv6 instead (default 0.0.0.0)
-#      - UI_PORT=6247 # uncomment to change the UI port (default 6246)
-#      - GITHUB_TOKEN=ghp_yourtoken # Optional: GitHub Personal Access Token for higher API rate limits (60/hr without, 5000/hr with token)
+      - TRILIUM_DATA_DIR=/home/node/trilium-data
+      - TRILIUM_TRUSTED_REVERSE_PROXY=true
     volumes:
-      - /home/lach/configs/maintainerr:/opt/data
-    ports:
-      - 6246:6246
+      - /home/lach/configs/trilium:/home/node/trilium-data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
     restart: unless-stopped
-  
 
 networks:
-  aar:
-    external: true
-    name: arr
-  monitoring:
-    external: true
-    name: monitoring
+  proxy:
+    name: proxy
+  media:
+    name: media
+  llm:
+    name: llm
+  supabase:
+    name: supabase
