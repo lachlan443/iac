@@ -23,9 +23,8 @@ services:
     container_name: tinyauth
     networks:
       - proxy
-    environment:
-      - TINYAUTH_APPURL=${TINYAUTH_APP_URL}
-      - TINYAUTH_AUTH_USERS=${TINYAUTH_USERS}
+    env_file:
+      - /home/lach/configs/tinyauth/.env
     volumes:
       - /home/lach/configs/tinyauth:/data
     restart: unless-stopped
