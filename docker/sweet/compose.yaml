@@ -16,14 +16,15 @@ services:
     restart: unless-stopped
 
   tinyauth:
-    image: ghcr.io/steveiliop56/tinyauth:latest
+    image: ghcr.io/tinyauthapp/tinyauth:v5.0.7
     container_name: tinyauth
     networks:
       - proxy
     environment:
-      - APP_URL=${TINYAUTH_APP_URL}
-      - SECRET=${TINYAUTH_SECRET}
-      - USERS=${TINYAUTH_USERS}
+      - TINYAUTH_APPURL=${TINYAUTH_APP_URL}
+      - TINYAUTH_AUTH_USERS=${TINYAUTH_USERS}
+    volumes:
+      - /home/lach/configs/tinyauth:/data
     restart: unless-stopped
 
   cloudflared:
