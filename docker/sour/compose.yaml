@@ -70,6 +70,17 @@ services:
     networks:
       - proxy
 
+  pocket-id:
+    image: ghcr.io/stonith404/pocket-id:v2.7.0
+    container_name: pocket-id
+    env_file:
+      - /home/lach/configs/pocket-id/.env
+    volumes:
+      - /home/lach/configs/pocket-id:/app/data
+    restart: unless-stopped
+    networks:
+      - proxy
+
   backup:
     image: lachlan443/backblaze-backup:1.2.0
     container_name: backup
