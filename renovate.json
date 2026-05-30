@@ -15,8 +15,8 @@
   "semanticCommits": "enabled",
   "docker-compose": {
     "managerFilePatterns": [
-      "(^|/)compose\\.ya?ml$",
-      "(^|/)[^/]+-compose\\.ya?ml$"
+      "/(^|/)compose\\.ya?ml$/",
+      "/(^|/)[^/]+-compose\\.ya?ml$/"
     ]
   },
   "customManagers": [
