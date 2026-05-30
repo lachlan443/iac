@@ -7,5 +7,11 @@
       matchPackageNames: ["henrygd/beszel", "henrygd/beszel-agent"],
       groupName: "beszel",
     },
+    {
+      description: "Group all supabase images together",
+      matchDatasources: ["docker"],
+      matchFileNames: ["docker/sweet/supabase-compose.yaml"],
+      groupName: "supabase",
+    },
   ],
 }
