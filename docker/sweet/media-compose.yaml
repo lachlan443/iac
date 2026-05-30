@@ -182,7 +182,7 @@ services:
     restart: unless-stopped
 
   maintainerr:
-    image: ghcr.io/maintainerr/maintainerr:3.11.1
+    image: ghcr.io/maintainerr/maintainerr:3.13.0
     container_name: maintainerr
     user: 1000:1000
     networks:
