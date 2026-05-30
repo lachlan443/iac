@@ -137,7 +137,7 @@ services:
       ENABLE_IMAGE_TRANSFORMATION: "false"
 
   supabase-analytics:
-    image: supabase/logflare:1.36.1
+    image: supabase/logflare:1.42.0
     container_name: supabase-analytics
     restart: unless-stopped
     networks:
