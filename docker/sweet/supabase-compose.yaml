@@ -190,7 +190,7 @@ services:
       - "label=disable"
 
   supabase-meta:
-    image: supabase/postgres-meta:v0.96.3
+    image: supabase/postgres-meta:v0.96.6
     container_name: supabase-meta
     restart: unless-stopped
     networks:
