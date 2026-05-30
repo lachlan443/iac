@@ -48,7 +48,7 @@ services:
       - log_min_messages=fatal
 
   supabase-auth:
-    image: supabase/gotrue:v2.186.0
+    image: supabase/gotrue:v2.189.0
     container_name: supabase-auth
     restart: unless-stopped
     networks:
