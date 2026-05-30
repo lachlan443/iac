@@ -27,7 +27,7 @@ services:
     restart: unless-stopped
 
   kokoro:
-    image: ghcr.io/remsky/kokoro-fastapi-cpu:v0.3.0
+    image: ghcr.io/remsky/kokoro-fastapi-cpu:v0.4.0
     container_name: kokoro
     networks:
       - llm
