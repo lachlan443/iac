@@ -167,7 +167,7 @@ services:
       LOGFLARE_FEATURE_FLAG_OVERRIDE: multibackend=true
 
   supabase-vector:
-    image: timberio/vector:0.53.0-alpine
+    image: timberio/vector:0.55.0-alpine
     container_name: supabase-vector
     restart: unless-stopped
     networks:
