@@ -81,7 +81,7 @@ services:
       GOTRUE_SMS_AUTOCONFIRM: "false"
 
   supabase-rest:
-    image: postgrest/postgrest:v14.8
+    image: postgrest/postgrest:v14.12
     container_name: supabase-rest
     restart: unless-stopped
     networks:
