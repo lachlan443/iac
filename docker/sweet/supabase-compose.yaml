@@ -12,7 +12,7 @@ name: supabase
 
 services:
   supabase-db:
-    image: supabase/postgres:15.8.1.085
+    image: supabase/postgres:17.6.1.131
     container_name: supabase-db
     restart: unless-stopped
     networks:
