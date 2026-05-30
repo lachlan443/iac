@@ -250,7 +250,7 @@ services:
       NEXT_ANALYTICS_BACKEND_PROVIDER: postgres
 
   supabase-functions:
-    image: supabase/edge-runtime:v1.71.2
+    image: supabase/edge-runtime:v1.74.0
     container_name: supabase-functions
     restart: unless-stopped
     networks:
