@@ -102,7 +102,7 @@ services:
     command: ["postgrest"]
 
   supabase-storage:
-    image: supabase/storage-api:v1.48.26
+    image: supabase/storage-api:v1.60.2
     container_name: supabase-storage
     restart: unless-stopped
     networks:
