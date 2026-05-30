@@ -54,6 +54,7 @@ services:
     container_name: homeassistant
     networks:
       - llm
+      - media
     environment:
       - TZ=${TZ}
     volumes:
@@ -63,3 +64,6 @@ services:
 networks:
   llm:
     name: llm
+  media:
+    name: media
+    external: true
