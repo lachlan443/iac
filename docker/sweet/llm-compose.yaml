@@ -55,6 +55,7 @@ services:
     networks:
       - llm
       - media
+      - proxy
     environment:
       - TZ=${TZ}
     volumes:
@@ -66,4 +67,7 @@ networks:
     name: llm
   media:
     name: media
+    external: true
+  proxy:
+    name: proxy
     external: true
