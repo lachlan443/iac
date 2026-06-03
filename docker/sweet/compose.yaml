@@ -82,7 +82,7 @@ services:
     restart: unless-stopped
 
   habits:
-    image: lachlan443/habits:2.3.0
+    image: lachlan443/habits:2.3.1
     container_name: habits
     networks:
       - proxy
