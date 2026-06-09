@@ -8,7 +8,6 @@ services:
       - proxy
       - media
       - llm
-      - supabase
     ports:
       - "80:80"
       - "443:443"
@@ -97,5 +96,3 @@ networks:
     name: media
   llm:
     name: llm
-  supabase:
-    name: supabase
