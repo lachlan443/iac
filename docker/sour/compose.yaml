@@ -12,8 +12,8 @@ services:
     ports:
       - "80:80"
       - "443:443"
-    environment:
-      - CF_DNS_API_TOKEN=${CF_DNS_API_TOKEN}
+    env_file:
+      - /home/lach/configs/traefik/.env
     volumes:
       - /home/lach/configs/traefik:/etc/traefik
     restart: unless-stopped
@@ -30,7 +30,9 @@ services:
   cloudflared:
     image: cloudflare/cloudflared:2026.5.0
     container_name: cloudflared
-    command: tunnel --no-autoupdate run --token ${CLOUDFLARED_TUNNEL_TOKEN}
+    command: tunnel --no-autoupdate run
+    env_file:
+      - /home/lach/configs/cloudflared/.env
     restart: unless-stopped
     networks:
       - proxy
@@ -46,11 +48,8 @@ services:
     cap_add:
       - SYS_RAWIO
       - SYS_ADMIN
-    environment:
-      LISTEN: ${BESZEL_LISTEN}
-      KEY: ${BESZEL_KEY}
-      TOKEN: ${BESZEL_TOKEN}
-      HUB_URL: ${BESZEL_HUB_URL}
+    env_file:
+      - /home/lach/configs/beszel-agent/.env
 
   beszel:
     image: henrygd/beszel:0.18.7
@@ -68,8 +67,8 @@ services:
   archisteamfarm:
     image: justarchi/archisteamfarm:6.3.5.1
     container_name: asf
-    environment:
-      - ASF_CRYPTKEY=${ASF_CRYPTKEY}
+    env_file:
+      - /home/lach/configs/asf/.env
     volumes:
       - /home/lach/configs/asf:/app/config
       - /home/lach/configs/asf/logs:/app/logs
@@ -120,13 +119,28 @@ services:
   backup:
     image: lachlan443/backblaze-backup:1.2.0
     container_name: backup
-    environment:
-      - TZ=${TZ}
+    env_file:
+      - /home/lach/configs/backup/.env
     volumes:
       - /home/lach/configs/backup:/config
       - /home/lach/backups:/backups
       - /home/lach:/source:ro
     restart: unless-stopped
+
+  backrest:
+    image: garethgeorge/backrest:v1.13.0
+    container_name: backrest
+    env_file:
+      - /home/lach/configs/backrest/.env
+    ports:
+      - "100.77.186.107:9898:9898"
+    volumes:
+      - /home/lach/configs/backrest/data:/data
+      - /home/lach/configs/backrest/cache:/cache
+      - /home/lach:/source:ro
+    restart: unless-stopped
+    networks:
+      - proxy
 
 networks:
   proxy:
