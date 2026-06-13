@@ -42,9 +42,7 @@ services:
       - llama-server
       - kokoro
     env_file:
-      - .env.llm
-    environment:
-      - OPENAI_API_BASE_URL=http://llama-server:8086/v1
+      - /home/lach/configs/open-webui/.env
     volumes:
       - /home/lach/configs/open-webui:/app/backend/data
     restart: unless-stopped
@@ -56,8 +54,8 @@ services:
       - llm
       - media
       - proxy
-    environment:
-      - TZ=${TZ}
+    env_file:
+      - /home/lach/configs/homeassistant/.env
     volumes:
       - /home/lach/configs/homeassistant:/config
     restart: unless-stopped

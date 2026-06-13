@@ -11,8 +11,8 @@ services:
     ports:
       - "80:80"
       - "443:443"
-    environment:
-      - CF_DNS_API_TOKEN=${CF_DNS_API_TOKEN}
+    env_file:
+      - /home/lach/configs/traefik/.env
     volumes:
       - /home/lach/configs/traefik:/etc/traefik
     restart: unless-stopped
@@ -22,9 +22,9 @@ services:
     container_name: cloudflared
     networks:
       - proxy
-    environment:
-      - TZ=${TZ}
-    command: tunnel --no-autoupdate run --token ${CLOUDFLARED_TUNNEL_TOKEN}
+    env_file:
+      - /home/lach/configs/cloudflared/.env
+    command: tunnel --no-autoupdate run
     restart: unless-stopped
 
   beszel-agent:
@@ -43,19 +43,14 @@ services:
       - SYS_RAWIO
       - SYS_ADMIN
     entrypoint: ["/bin/sh", "-c", "sleep 60 && exec /agent"]
-    environment:
-      LISTEN: ${BESZEL_LISTEN}
-      KEY: ${BESZEL_KEY}
-      TOKEN: ${BESZEL_TOKEN}
-      HUB_URL: ${BESZEL_HUB_URL}
+    env_file:
+      - /home/lach/configs/beszel-agent/.env
 
   backup:
     image: lachlan443/backblaze-backup:1.2.0
     container_name: backup
-    environment:
-      - TZ=${TZ}
-      - PUID=${PUID}
-      - PGID=${PGID}
+    env_file:
+      - /home/lach/configs/backup/.env
     volumes:
       - /home/lach/configs/backup:/config
       - /home/lach/backups:/backups
@@ -65,16 +60,8 @@ services:
   renovate:
     image: renovate/renovate:latest
     container_name: renovate
-    environment:
-      - RENOVATE_PLATFORM=${RENOVATE_PLATFORM}
-      - RENOVATE_REPOSITORIES=${RENOVATE_REPOSITORIES}
-      - RENOVATE_ONBOARDING=${RENOVATE_ONBOARDING}
-      - RENOVATE_REQUIRE_CONFIG=${RENOVATE_REQUIRE_CONFIG}
-      - LOG_LEVEL=${RENOVATE_LOG_LEVEL}
-      - RENOVATE_USERNAME=${RENOVATE_USERNAME}
-      - RENOVATE_GIT_AUTHOR=${RENOVATE_GIT_AUTHOR}
-      - RENOVATE_GITHUB_APP_ID=${RENOVATE_GITHUB_APP_ID}
-      - RENOVATE_GITHUB_APP_KEY=${RENOVATE_GITHUB_APP_KEY}
+    env_file:
+      - /home/lach/configs/renovate/.env
     volumes:
       - /home/lach/configs/renovate:/config
     entrypoint: ["/bin/sh", "/config/entrypoint.sh"]

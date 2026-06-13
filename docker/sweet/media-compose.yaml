@@ -6,10 +6,8 @@ services:
     container_name: sonarr
     networks:
       - media
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
+    env_file:
+      - /home/lach/configs/sonarr/.env
     volumes:
       - /home/lach/configs/sonarr:/config
       - /data:/data
@@ -20,10 +18,8 @@ services:
     container_name: radarr
     networks:
       - media
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
+    env_file:
+      - /home/lach/configs/radarr/.env
     volumes:
       - /home/lach/configs/radarr:/config
       - /data:/data
@@ -34,10 +30,8 @@ services:
     container_name: prowlarr
     networks:
       - media
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
+    env_file:
+      - /home/lach/configs/prowlarr2/.env
     volumes:
       - /home/lach/configs/prowlarr2:/config
     restart: unless-stopped
@@ -47,12 +41,8 @@ services:
     container_name: qbittorrent
     networks:
       - media
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
-      - WEBUI_PORT=${QBITTORRENT_WEBUI_PORT}
-      - TORRENTING_PORT=${QBITTORRENT_TORRENTING_PORT}
+    env_file:
+      - /home/lach/configs/qBittorrent/.env
     volumes:
       - /home/lach/configs/qBittorrent:/config
       - /data/torrents:/data/torrents:rw
@@ -66,10 +56,8 @@ services:
     container_name: sabnzbd
     networks:
       - media
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
+    env_file:
+      - /home/lach/configs/SABnzbd/.env
     volumes:
       - /home/lach/configs/SABnzbd:/config
       - /data/usenet:/data/usenet:rw
@@ -81,10 +69,10 @@ services:
     user: 1000:1000
     networks:
       - media
+    env_file:
+      - /home/lach/configs/recyclarr/.env
     volumes:
       - /home/lach/configs/recyclarr:/config
-    environment:
-      - TZ=${TZ}
     restart: unless-stopped
 
   kometa:
@@ -92,13 +80,8 @@ services:
     container_name: kometa
     networks:
       - media
-    environment:
-      - PMM_CONFIG=${KOMETA_PMM_CONFIG}
-      - KOMETA_TIME=${KOMETA_TIME}
-      - PLEX_UID=${PLEX_UID}
-      - PLEX_GID=${PLEX_GID}
-      - KOMETA_RUN=${KOMETA_RUN}
-      - TZ=${TZ}
+    env_file:
+      - /home/lach/configs/kometa/.env
     volumes:
       - /home/lach/configs/kometa:/config
     restart: unless-stopped
@@ -106,12 +89,8 @@ services:
   disk-stats:
     build: /home/lach/projects/kometa-disk-usage
     container_name: kometa-sidecar-disk-stats
-    environment:
-      - TZ=${TZ}
-      - KOMETA_TIME=${DISK_STATS_SCHEDULE}
-      - DATA_PATH=/data
-      - MOVIES_PATH=/data/media/movies
-      - TV_PATH=/data/media/tv
+    env_file:
+      - /home/lach/configs/kometa/disk-stats.env
     volumes:
       - /home/lach/configs/kometa:/config
       - /data:/data:ro
@@ -121,11 +100,8 @@ services:
     image: lscr.io/linuxserver/plex:1.43.2
     container_name: plex
     network_mode: host
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
-      - VERSION=${PLEX_VERSION}
+    env_file:
+      - /home/lach/configs/plex/.env
     volumes:
       - /home/lach/configs/plex:/config
       - /data/media/tv:/tv
@@ -139,8 +115,8 @@ services:
     container_name: flaresolverr
     networks:
       - media
-    environment:
-      - TZ=${TZ}
+    env_file:
+      - /home/lach/configs/flaresolverr/.env
     restart: unless-stopped
 
   cleanuparr:
@@ -148,12 +124,8 @@ services:
     container_name: cleanuparr
     networks:
       - media
-    environment:
-      - PORT=${CLEANUPARR_PORT}
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - UMASK=${CLEANUPARR_UMASK}
-      - TZ=${TZ}
+    env_file:
+      - /home/lach/configs/cleanuparr/.env
     volumes:
       - /home/lach/configs/cleanuparr:/config
     healthcheck:
@@ -169,14 +141,8 @@ services:
     container_name: pulsarr
     networks:
       - media
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
-      - baseUrl=${PULSARR_BASE_URL}
-      - port=${PULSARR_PORT}
-      - logLevel=${PULSARR_LOG_LEVEL}
-      - NODE_ARGS=${PULSARR_NODE_ARGS}
+    env_file:
+      - /home/lach/configs/pulsarr/.env
     volumes:
       - /home/lach/configs/pulsarr:/app/data
     restart: unless-stopped
@@ -187,8 +153,8 @@ services:
     user: 1000:1000
     networks:
       - media
-    environment:
-      - TZ=${TZ}
+    env_file:
+      - /home/lach/configs/maintainerr/.env
     volumes:
       - /home/lach/configs/maintainerr:/opt/data
     restart: unless-stopped
@@ -199,7 +165,7 @@ services:
     networks:
       - media
     env_file:
-      - .env
+      - /home/lach/configs/logline/.env
     volumes:
       - /home/lach/configs/logline:/config
     restart: unless-stopped
