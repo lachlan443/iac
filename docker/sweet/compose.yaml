@@ -57,6 +57,20 @@ services:
       - /home/lach:/source:ro
     restart: unless-stopped
 
+  
+  backrest:
+    image: garethgeorge/backrest:v1.14.1
+    container_name: backrest
+    ports:
+      - "100.111.195.102:9898:9898"
+    volumes:
+      - /home/lach/configs/backrest/data:/data
+      - /home/lach/configs/backrest/cache:/cache
+      - /home/lach:/source:ro
+    restart: unless-stopped
+    networks:
+      - proxy
+
   renovate:
     image: renovate/renovate:latest
     container_name: renovate
