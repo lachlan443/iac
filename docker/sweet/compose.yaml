@@ -91,6 +91,23 @@ services:
       - /home/lach/configs/habits:/config
     restart: unless-stopped
 
+  muximux:
+    image: ghcr.io/mescon/muximux:3.3.3
+    container_name: muximux
+    init: true
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - /home/lach/configs/muximux/data:/app/data
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Australia/Sydney
+    networks:
+      - proxy
+
+
 networks:
   proxy:
     name: proxy
