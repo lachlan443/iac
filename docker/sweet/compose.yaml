@@ -53,10 +53,11 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Australia/Sydney
-      - DEFAULT_WORKSPACE=/config/workspace
+      - DEFAULT_WORKSPACE=/workspace
       - PWA_APPNAME=code-server
     volumes:
       - /home/lach/configs/code:/config
+      - /home/lach:/workspace
     networks:
       - proxy
     restart: unless-stopped
