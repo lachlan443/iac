@@ -46,15 +46,19 @@ services:
     env_file:
       - /home/lach/configs/beszel-agent/.env
 
-  backup:
-    image: lachlan443/backblaze-backup:1.2.0
-    container_name: backup
-    env_file:
-      - /home/lach/configs/backup/.env
+  code-server:
+    image: lscr.io/linuxserver/code-server:4.133.0
+    container_name: code-server
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Australia/Sydney
+      - DEFAULT_WORKSPACE=/config/workspace
+      - PWA_APPNAME=code-server
     volumes:
-      - /home/lach/configs/backup:/config
-      - /home/lach/backups:/backups
-      - /home/lach:/source:ro
+      - /home/lach/configs/code:/config
+    networks:
+      - proxy
     restart: unless-stopped
 
   backrest:
