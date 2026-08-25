@@ -58,11 +58,11 @@ jobs:
 
       - name: Pull images
         run: |
-          ssh lach@sweet "for f in /home/lach/docker/*.yaml; do docker compose -f \"\$f\" pull --policy missing; done"
+          ssh lach@sweet 'find /home/lach/docker -type f \( -name "compose.yml" -o -name "compose.yaml" \) -print0 | while IFS= read -r -d "" f; do docker compose -f "$f" pull --policy missing; done'
 
       - name: Deploy
         run: |
-          ssh lach@sweet "for f in /home/lach/docker/*.yaml; do docker compose -f \"\$f\" up -d --remove-orphans; done"
+          ssh lach@sweet 'find /home/lach/docker -type f \( -name "compose.yml" -o -name "compose.yaml" \) -print0 | while IFS= read -r -d "" f; do docker compose -f "$f" up -d --remove-orphans; done'
 
       - name: Prune unused images
         run: ssh lach@sweet "docker image prune -a -f"
