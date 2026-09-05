@@ -1,11 +1,10 @@
-name: llm
+name: home
 
 services:
   homeassistant:
     image: ghcr.io/home-assistant/home-assistant:2026.6.3
     container_name: homeassistant
     networks:
-      - llm
       - media
       - proxy
     env_file:
