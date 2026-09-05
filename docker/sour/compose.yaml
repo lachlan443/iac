@@ -84,7 +84,7 @@ services:
       - proxy
 
   archisteamfarm:
-    image: justarchi/archisteamfarm:6.3.5.1
+    image: justarchi/archisteamfarm:6.3.9.6
     container_name: asf
     env_file:
       - /home/lach/configs/asf/.env
