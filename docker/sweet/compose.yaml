@@ -109,7 +109,7 @@ services:
     restart: unless-stopped
 
   muximux:
-    image: ghcr.io/mescon/muximux:3.3.3
+    image: ghcr.io/mescon/muximux:3.4.1
     container_name: muximux
     init: true
     restart: unless-stopped
