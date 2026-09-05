@@ -54,7 +54,7 @@ jobs:
       - name: Rsync compose files
         run: |
           ssh -o StrictHostKeyChecking=accept-new lach@sweet "mkdir -p /home/lach/docker"
-          rsync -az docker/sweet/ lach@sweet:/home/lach/docker/
+          rsync -az --delete docker/sweet/ lach@sweet:/home/lach/docker/
 
       - name: Pull images
         run: |
@@ -94,7 +94,7 @@ jobs:
       - name: Rsync compose files
         run: |
           ssh -o StrictHostKeyChecking=accept-new lach@sour "mkdir -p /home/lach/docker"
-          rsync -az docker/sour/ lach@sour:/home/lach/docker/
+          rsync -az --delete docker/sour/ lach@sour:/home/lach/docker/
 
       - name: Pull images
         run: |
