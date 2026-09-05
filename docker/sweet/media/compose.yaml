@@ -51,6 +51,53 @@ services:
       - 6881:6881/udp
     restart: unless-stopped
 
+  autobrr:
+    container_name: autobrr
+    image: ghcr.io/autobrr/autobrr:v1.85.0
+    restart: unless-stopped
+    networks:
+      - media
+    #logging:
+    #  driver: json-file
+    #  options:
+    #    max-file: ${DOCKERLOGGING_MAXFILE}
+    #    max-size: ${DOCKERLOGGING_MAXSIZE}
+    user: 1000:1000
+    environment:
+      - TZ=Australia/Sydney
+    volumes:
+      - /home/lach/configs/autobrr:/config
+
+  qui:
+    image: ghcr.io/autobrr/qui:v1.28.0
+    container_name: qui
+    restart: unless-stopped
+    networks:
+      - media
+    volumes:
+      - /home/lach/configs/qui:/config
+    #environment:
+      # Run as this user/group and chown /config (set both or neither).
+      # Alternative to the standard "user:" option, see the Permissions docs.
+      #PUID: "1000"
+      #PGID: "1000"
+      # Permission mask for new files and directories, for example 002 for group write
+      #UMASK: "002"
+
+  znc:
+    image: lscr.io/linuxserver/znc:1.10.2
+    container_name: znc
+    networks:
+      - media
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Australia/Sydney
+    volumes:
+      - /home/lach/configs/znc:/config
+    restart: unless-stopped
+
+
   sabnzbd:
     image: lscr.io/linuxserver/sabnzbd:5.0.3
     container_name: sabnzbd
