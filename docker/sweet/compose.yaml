@@ -7,7 +7,6 @@ services:
     networks:
       - proxy
       - media
-      - llm
     ports:
       - "80:80"
       - "443:443"
@@ -130,5 +129,3 @@ networks:
     name: proxy
   media:
     name: media
-  llm:
-    name: llm

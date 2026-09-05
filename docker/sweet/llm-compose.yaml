@@ -1,52 +1,6 @@
 name: llm
 
 services:
-  llama-server:
-    image: ghcr.io/ggml-org/llama.cpp:server-vulkan-b9354
-    container_name: llama-server
-    networks:
-      - llm
-    devices:
-      - /dev/dri:/dev/dri
-    group_add:
-      - "993"
-      - "44"
-    volumes:
-      - /home/lach/llm-models:/models:ro
-    command: >
-      -m /models/Qwen_Qwen3-4B-Instruct-2507-Q4_K_M.gguf
-      -c 4096
-      --host 0.0.0.0
-      --port 8086
-      -ngl 99
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8086/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-    restart: unless-stopped
-
-  kokoro:
-    image: ghcr.io/remsky/kokoro-fastapi-cpu:v0.3.0
-    container_name: kokoro
-    networks:
-      - llm
-    restart: unless-stopped
-
-  open-webui:
-    image: openwebui/open-webui:0.9.5
-    container_name: open-webui
-    networks:
-      - llm
-    depends_on:
-      - llama-server
-      - kokoro
-    env_file:
-      - /home/lach/configs/open-webui/.env
-    volumes:
-      - /home/lach/configs/open-webui:/app/backend/data
-    restart: unless-stopped
-
   homeassistant:
     image: ghcr.io/home-assistant/home-assistant:2026.6.3
     container_name: homeassistant
@@ -61,8 +15,6 @@ services:
     restart: unless-stopped
 
 networks:
-  llm:
-    name: llm
   media:
     name: media
     external: true
