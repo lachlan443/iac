@@ -61,6 +61,19 @@ services:
       - proxy
     restart: unless-stopped
 
+
+  homeassistant:
+    image: ghcr.io/home-assistant/home-assistant:2026.6.3
+    container_name: homeassistant
+    networks:
+      - media
+      - proxy
+    env_file:
+      - /home/lach/configs/homeassistant/.env
+    volumes:
+      - /home/lach/configs/homeassistant:/config
+    restart: unless-stopped
+
   backrest:
     image: garethgeorge/backrest:v1.14.1
     container_name: backrest
