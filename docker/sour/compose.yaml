@@ -57,7 +57,7 @@ services:
 
 
   beszel-agent:
-    image: henrygd/beszel-agent:0.18.7-alpine
+    image: henrygd/beszel-agent:0.19.0-alpine
     container_name: beszel-agent
     restart: unless-stopped
     network_mode: host
@@ -71,7 +71,7 @@ services:
       - /home/lach/configs/beszel-agent/.env
 
   beszel:
-    image: henrygd/beszel:0.18.7
+    image: henrygd/beszel:0.19.0
     container_name: beszel
     ports:
       - "8090:8090"
