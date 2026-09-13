@@ -69,7 +69,7 @@ services:
       - /home/lach/configs/autobrr:/config
 
   qui:
-    image: ghcr.io/autobrr/qui:v1.28.0
+    image: ghcr.io/autobrr/qui:v1.29.0
     container_name: qui
     restart: unless-stopped
     networks:
