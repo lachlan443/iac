@@ -159,7 +159,7 @@ services:
     restart: unless-stopped
 
   flaresolverr:
-    image: flaresolverr/flaresolverr:v3.5.0
+    image: flaresolverr/flaresolverr:v3.5.2
     container_name: flaresolverr
     networks:
       - media
