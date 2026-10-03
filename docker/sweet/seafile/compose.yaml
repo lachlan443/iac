@@ -1,7 +1,9 @@
 #
-# Seafile CE, adapted from https://manual.seafile.com/13.0/repo/docker/ce/seafile-server.yml and seadoc.yml
-# Caddy is dropped in favour of Traefik (routes in /home/lach/configs/traefik/dynamic/routes.yml).
-# Secrets (DB passwords, JWT key, initial admin) live in /home/lach/configs/seafile/.env
+# Seafile CE, adapted from https://manual.seafile.com/13.0/repo/docker/ (seafile-server.yml, notification-server.yml,
+# md-server.yml, thumbnail-server.yml, onlyoffice.yml). Caddy is dropped in favour of Traefik
+# (routes in /home/lach/configs/traefik/dynamic/routes.yml).
+# Secrets (DB passwords, JWT keys, initial admin) live in /home/lach/configs/seafile/.env
+# Metadata, video thumbnail and OnlyOffice switches live in /home/lach/configs/seafile/data/seafile/conf/seahub_settings.py
 #
 
 name: seafile
@@ -50,9 +52,10 @@ services:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - ENABLE_GO_FILESERVER=true
-      - ENABLE_SEADOC=true
-      - SEADOC_SERVER_URL=https://files.lbanks.dev/sdoc-server
-      - ENABLE_NOTIFICATION_SERVER=false
+      - ENABLE_SEADOC=false
+      - ENABLE_NOTIFICATION_SERVER=true
+      - INNER_NOTIFICATION_SERVER_URL=http://notification-server:8083
+      - NOTIFICATION_SERVER_URL=https://files.lbanks.dev/notification
       - ENABLE_SEAFILE_AI=false
       - ENABLE_FACE_RECOGNITION=false
     volumes:
@@ -73,26 +76,103 @@ services:
       retries: 3
       start_period: 10s
 
-  seadoc:
-    image: seafileltd/sdoc-server:2.0.9
-    container_name: seadoc
+  notification-server:
+    image: seafileltd/notification-server:13.0.21
+    container_name: notification-server
     env_file:
       - /home/lach/configs/seafile/.env
     environment:
-      - DB_HOST=db
-      - DB_PORT=3306
-      - DB_USER=seafile
-      - DB_NAME=seahub_db
-      - TIME_ZONE=Australia/Sydney
-      - SEAHUB_SERVICE_URL=http://seafile
+      - SEAFILE_MYSQL_DB_HOST=db
+      - SEAFILE_MYSQL_DB_PORT=3306
+      - SEAFILE_MYSQL_DB_USER=seafile
+      - SEAFILE_MYSQL_DB_CCNET_DB_NAME=ccnet_db
+      - SEAFILE_MYSQL_DB_SEAFILE_DB_NAME=seafile_db
+      - SEAFILE_LOG_TO_STDOUT=false
+      - NOTIFICATION_SERVER_LOG_LEVEL=info
     volumes:
-      - /home/lach/configs/seafile/seadoc:/shared
+      - /home/lach/configs/seafile/data/seafile/logs:/shared/seafile/logs
     networks:
       - default
       - proxy
     depends_on:
       db:
         condition: service_healthy
+      seafile:
+        condition: service_healthy
+    restart: always
+
+  seafile-md-server:
+    image: seafileltd/seafile-md-server:13.0.28
+    container_name: seafile-md-server
+    env_file:
+      - /home/lach/configs/seafile/.env
+    environment:
+      - SEAFILE_MYSQL_DB_HOST=db
+      - SEAFILE_MYSQL_DB_PORT=3306
+      - SEAFILE_MYSQL_DB_USER=seafile
+      - SEAFILE_MYSQL_DB_SEAFILE_DB_NAME=seafile_db
+      - SEAFILE_LOG_TO_STDOUT=false
+      - MD_PORT=8084
+      - MD_LOG_LEVEL=info
+      - MD_MAX_CACHE_SIZE=1GB
+      - MD_CHECK_UPDATE_INTERVAL=30m
+      - MD_FILE_COUNT_LIMIT=100000
+      - MD_STORAGE_TYPE=disk
+      - CACHE_PROVIDER=redis
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    volumes:
+      - /home/lach/configs/seafile/data:/shared
+    depends_on:
+      db:
+        condition: service_healthy
+      seafile:
+        condition: service_healthy
+    restart: unless-stopped
+
+  thumbnail-server:
+    image: seafileltd/thumbnail-server:13.0.20
+    container_name: thumbnail-server
+    env_file:
+      - /home/lach/configs/seafile/.env
+    environment:
+      - TIME_ZONE=Australia/Sydney
+      - SEAFILE_MYSQL_DB_HOST=db
+      - SEAFILE_MYSQL_DB_PORT=3306
+      - SEAFILE_MYSQL_DB_USER=seafile
+      - SEAFILE_MYSQL_DB_CCNET_DB_NAME=ccnet_db
+      - SEAFILE_MYSQL_DB_SEAFILE_DB_NAME=seafile_db
+      - NON_ROOT=false
+      - SEAFILE_LOG_TO_STDOUT=false
+      - SITE_ROOT=/
+      - INNER_SEAHUB_SERVICE_URL=http://seafile
+      - THUMBNAIL_IMAGE_ORIGINAL_SIZE_LIMIT=256
+    volumes:
+      - /home/lach/configs/seafile/data:/shared
+    networks:
+      - default
+      - proxy
+    depends_on:
+      db:
+        condition: service_healthy
+      seafile:
+        condition: service_healthy
+    restart: always
+
+  onlyoffice:
+    image: onlyoffice/documentserver:9.4.0.1
+    container_name: seafile-onlyoffice
+    env_file:
+      - /home/lach/configs/seafile/.env
+    environment:
+      - JWT_ENABLED=true
+    volumes:
+      - /home/lach/configs/seafile/onlyoffice/logs:/var/log/onlyoffice
+      - /home/lach/configs/seafile/onlyoffice/data:/var/www/onlyoffice/Data
+      - /home/lach/configs/seafile/onlyoffice/lib:/var/lib/onlyoffice
+    networks:
+      - default
+      - proxy
     restart: unless-stopped
 
 networks:
