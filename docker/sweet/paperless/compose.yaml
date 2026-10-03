@@ -1,0 +1,61 @@
+#
+# Paperless-ngx, adapted from https://github.com/paperless-ngx/paperless-ngx/blob/main/docker/compose/docker-compose.postgres.yml
+# Named volumes are replaced with bind mounts under /home/lach/configs/paperless, and no ports are published
+# (Traefik routes docs.lbanks.dev to it; see /home/lach/configs/traefik/dynamic/routes.yml).
+# Secrets (secret key, DB password, initial admin) live in /home/lach/configs/paperless/.env
+#
+
+name: paperless
+
+services:
+  broker:
+    image: valkey/valkey:9.1.2-alpine
+    container_name: paperless-redis
+    volumes:
+      - /home/lach/configs/paperless/redis:/data
+    restart: unless-stopped
+
+  db:
+    image: postgres:18.6
+    container_name: paperless-postgres
+    env_file:
+      - /home/lach/configs/paperless/.env
+    environment:
+      - POSTGRES_DB=paperless
+      - POSTGRES_USER=paperless
+    volumes:
+      - /home/lach/configs/paperless/postgres:/var/lib/postgresql
+    restart: unless-stopped
+
+  webserver:
+    image: ghcr.io/paperless-ngx/paperless-ngx:3.2.1
+    container_name: paperless
+    env_file:
+      - /home/lach/configs/paperless/.env
+    environment:
+      - PAPERLESS_REDIS=redis://broker:6379
+      - PAPERLESS_DBHOST=db
+      - PAPERLESS_DBENGINE=postgresql
+      - PAPERLESS_URL=https://docs.lbanks.dev
+      - PAPERLESS_TIME_ZONE=Australia/Sydney
+      - PAPERLESS_OCR_LANGUAGE=eng
+      - PAPERLESS_FILENAME_FORMAT={{ created_year }}/{{ correspondent }}/{{ created }} {{ title }}
+      - PAPERLESS_FILENAME_FORMAT_REMOVE_NONE=true
+      - USERMAP_UID=1000
+      - USERMAP_GID=1000
+    volumes:
+      - /home/lach/configs/paperless/data:/usr/src/paperless/data
+      - /home/lach/configs/paperless/media:/usr/src/paperless/media
+      - /home/lach/configs/paperless/export:/usr/src/paperless/export
+      - /home/lach/configs/paperless/consume:/usr/src/paperless/consume
+    networks:
+      - default
+      - proxy
+    depends_on:
+      - db
+      - broker
+    restart: unless-stopped
+
+networks:
+  proxy:
+    external: true
