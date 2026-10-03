@@ -1,0 +1,100 @@
+#
+# Seafile CE, adapted from https://manual.seafile.com/13.0/repo/docker/ce/seafile-server.yml and seadoc.yml
+# Caddy is dropped in favour of Traefik (routes in /home/lach/configs/traefik/dynamic/routes.yml).
+# Secrets (DB passwords, JWT key, initial admin) live in /home/lach/configs/seafile/.env
+#
+
+name: seafile
+
+services:
+  db:
+    image: mariadb:10.11.19
+    container_name: seafile-mysql
+    env_file:
+      - /home/lach/configs/seafile/.env
+    environment:
+      - MYSQL_LOG_CONSOLE=true
+      - MARIADB_AUTO_UPGRADE=1
+    volumes:
+      - /home/lach/configs/seafile/mysql:/var/lib/mysql
+    restart: unless-stopped
+    healthcheck:
+      test: [CMD, /usr/local/bin/healthcheck.sh, --connect, --mariadbupgrade, --innodb_initialized]
+      interval: 20s
+      start_period: 30s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:8.8.0-alpine
+    container_name: seafile-redis
+    command: redis-server --save "" --appendonly no
+    restart: unless-stopped
+
+  seafile:
+    image: seafileltd/seafile-mc:13.0.28
+    container_name: seafile
+    env_file:
+      - /home/lach/configs/seafile/.env
+    environment:
+      - SEAFILE_SERVER_HOSTNAME=seafile.lbanks.dev
+      - SEAFILE_SERVER_PROTOCOL=https
+      - TIME_ZONE=Australia/Sydney
+      - SEAFILE_MYSQL_DB_HOST=db
+      - SEAFILE_MYSQL_DB_PORT=3306
+      - SEAFILE_MYSQL_DB_USER=seafile
+      - SEAFILE_MYSQL_DB_CCNET_DB_NAME=ccnet_db
+      - SEAFILE_MYSQL_DB_SEAFILE_DB_NAME=seafile_db
+      - SEAFILE_MYSQL_DB_SEAHUB_DB_NAME=seahub_db
+      - CACHE_PROVIDER=redis
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - ENABLE_GO_FILESERVER=true
+      - ENABLE_SEADOC=true
+      - SEADOC_SERVER_URL=https://seafile.lbanks.dev/sdoc-server
+      - ENABLE_NOTIFICATION_SERVER=false
+      - ENABLE_SEAFILE_AI=false
+      - ENABLE_FACE_RECOGNITION=false
+    volumes:
+      - /home/lach/configs/seafile/data:/shared
+    networks:
+      - default
+      - proxy
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    restart: unless-stopped
+    healthcheck:
+      test: [CMD-SHELL, curl -f http://localhost:80 || exit 1]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  seadoc:
+    image: seafileltd/sdoc-server:2.0.9
+    container_name: seadoc
+    env_file:
+      - /home/lach/configs/seafile/.env
+    environment:
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_USER=seafile
+      - DB_NAME=seahub_db
+      - TIME_ZONE=Australia/Sydney
+      - SEAHUB_SERVICE_URL=http://seafile
+    volumes:
+      - /home/lach/configs/seafile/seadoc:/shared
+    networks:
+      - default
+      - proxy
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+networks:
+  proxy:
+    external: true
