@@ -37,7 +37,7 @@ services:
     env_file:
       - /home/lach/configs/seafile/.env
     environment:
-      - SEAFILE_SERVER_HOSTNAME=seafile.lbanks.dev
+      - SEAFILE_SERVER_HOSTNAME=files.lbanks.dev
       - SEAFILE_SERVER_PROTOCOL=https
       - TIME_ZONE=Australia/Sydney
       - SEAFILE_MYSQL_DB_HOST=db
@@ -51,7 +51,7 @@ services:
       - REDIS_PORT=6379
       - ENABLE_GO_FILESERVER=true
       - ENABLE_SEADOC=true
-      - SEADOC_SERVER_URL=https://seafile.lbanks.dev/sdoc-server
+      - SEADOC_SERVER_URL=https://files.lbanks.dev/sdoc-server
       - ENABLE_NOTIFICATION_SERVER=false
       - ENABLE_SEAFILE_AI=false
       - ENABLE_FACE_RECOGNITION=false
