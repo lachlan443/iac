@@ -170,6 +170,7 @@ services:
       - /home/lach/configs/seafile/onlyoffice/logs:/var/log/onlyoffice
       - /home/lach/configs/seafile/onlyoffice/data:/var/www/onlyoffice/Data
       - /home/lach/configs/seafile/onlyoffice/lib:/var/lib/onlyoffice
+      - /home/lach/configs/seafile/onlyoffice/local-production-linux.json:/etc/onlyoffice/documentserver/local-production-linux.json:ro
     networks:
       - default
       - proxy
