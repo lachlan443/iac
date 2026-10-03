@@ -27,16 +27,6 @@ services:
       - /home/lach/configs/coredns:/etc/coredns
     restart: unless-stopped
 
-  cloudflared:
-    image: cloudflare/cloudflared:2026.9.1
-    container_name: cloudflared
-    command: tunnel --no-autoupdate run
-    env_file:
-      - /home/lach/configs/cloudflared/.env
-    restart: unless-stopped
-    networks:
-      - proxy
-
   code-server:
     image: lscr.io/linuxserver/code-server:4.133.0
     container_name: code-server

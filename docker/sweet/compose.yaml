@@ -16,16 +16,6 @@ services:
       - /home/lach/configs/traefik:/etc/traefik
     restart: unless-stopped
 
-  cloudflared:
-    image: cloudflare/cloudflared:2026.9.1
-    container_name: cloudflared
-    networks:
-      - proxy
-    env_file:
-      - /home/lach/configs/cloudflared/.env
-    command: tunnel --no-autoupdate run
-    restart: unless-stopped
-
   beszel-agent:
     image: henrygd/beszel-agent:0.21.0-alpine
     container_name: beszel-agent

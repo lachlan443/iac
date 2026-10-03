@@ -2,10 +2,6 @@
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
   packageRules: [
     {
-      matchPackageNames: ["cloudflare/cloudflared"],
-      changelogUrl: "https://github.com/cloudflare/cloudflared/blob/master/RELEASE_NOTES",
-    },
-    {
       matchPackageNames: ["kometateam/kometa"],
       changelogUrl: "https://github.com/Kometa-Team/Kometa/releases",
       sourceUrl: "https://github.com/Kometa-Team/Kometa",
