@@ -28,7 +28,7 @@ services:
     restart: unless-stopped
 
   webserver:
-    image: ghcr.io/paperless-ngx/paperless-ngx:3.2.1
+    image: ghcr.io/paperless-ngx/paperless-ngx:3.3.0
     container_name: paperless
     env_file:
       - /home/lach/configs/paperless/.env
