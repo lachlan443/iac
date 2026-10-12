@@ -160,7 +160,7 @@ services:
     restart: always
 
   onlyoffice:
-    image: onlyoffice/documentserver:9.4.0.1
+    image: onlyoffice/documentserver:10.0.0.1
     container_name: seafile-onlyoffice
     env_file:
       - /home/lach/configs/seafile/.env
