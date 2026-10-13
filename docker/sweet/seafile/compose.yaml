@@ -102,7 +102,7 @@ services:
     restart: always
 
   seafile-md-server:
-    image: seafileltd/seafile-md-server:13.0.28
+    image: seafileltd/seafile-md-server:14.0.7
     container_name: seafile-md-server
     env_file:
       - /home/lach/configs/seafile/.env
