@@ -34,7 +34,7 @@ services:
     restart: unless-stopped
 
   seafile:
-    image: seafileltd/seafile-mc:13.0.28
+    image: seafileltd/seafile-mc:14.0.9
     container_name: seafile
     env_file:
       - /home/lach/configs/seafile/.env
