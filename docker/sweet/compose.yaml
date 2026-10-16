@@ -36,7 +36,7 @@ services:
       - /home/lach/configs/beszel-agent/.env
 
   code-server:
-    image: lscr.io/linuxserver/code-server:4.133.0
+    image: lscr.io/linuxserver/code-server:4.141.0
     container_name: code-server
     environment:
       - PUID=1000
