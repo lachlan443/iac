@@ -131,7 +131,7 @@ services:
     restart: unless-stopped
 
   thumbnail-server:
-    image: seafileltd/thumbnail-server:13.0.20
+    image: seafileltd/thumbnail-server:14.0.7
     container_name: thumbnail-server
     env_file:
       - /home/lach/configs/seafile/.env
