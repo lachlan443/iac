@@ -10,7 +10,7 @@ name: seafile
 
 services:
   db:
-    image: mariadb:10.11.19
+    image: mariadb:13.0.2
     container_name: seafile-mysql
     env_file:
       - /home/lach/configs/seafile/.env
