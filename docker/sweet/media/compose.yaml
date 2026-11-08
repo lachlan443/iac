@@ -185,7 +185,7 @@ services:
     restart: unless-stopped
 
   pulsarr:
-    image: lakker/pulsarr:0.19.8
+    image: lakker/pulsarr:1.1.1
     container_name: pulsarr
     networks:
       - media
