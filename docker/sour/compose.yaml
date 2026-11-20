@@ -154,7 +154,8 @@ services:
     env_file:
       - /home/lach/configs/oauth2-proxy/.env
     ports:
-      - "4180:4180"
+      # Tailnet-only: sweet's Traefik forwardAuth reaches it here; no public exposure
+      - "100.77.186.107:4180:4180"
     restart: unless-stopped
     depends_on:
       - redis
