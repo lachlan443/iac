@@ -1,0 +1,12 @@
+# Shared Traefik middlewares (file provider). Routers/services are defined as
+# Docker labels on each service; reference these as e.g. `auth@file`.
+# Mounted read-only over /etc/traefik/dynamic in the traefik container.
+http:
+  middlewares:
+    auth:
+      forwardAuth:
+        address: "http://oauth2-proxy:4180/"
+        trustForwardHeader: true
+        authResponseHeaders:
+          - X-Auth-Request-Access-Token
+          - Authorization

@@ -12,6 +12,15 @@ name: immich
 services:
   immich-server:
     container_name: immich-server
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy
+      - traefik.http.routers.photos.rule=Host(`photos.lbanks.dev`)
+      - traefik.http.routers.photos.entrypoints=websecure
+      - traefik.http.routers.photos.tls.certresolver=cloudflare
+      - traefik.http.routers.photos.tls.domains[0].main=lbanks.dev
+      - traefik.http.routers.photos.tls.domains[0].sans=*.lbanks.dev
+      - traefik.http.services.photos.loadbalancer.server.port=2283
     image: ghcr.io/immich-app/immich-server:v3.4.2
     # extends:
     #   file: hwaccel.transcoding.yml

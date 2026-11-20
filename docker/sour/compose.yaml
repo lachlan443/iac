@@ -35,6 +35,8 @@ services:
       - /home/lach/configs/traefik/.env
     volumes:
       - /home/lach/configs/traefik:/etc/traefik
+      # Shared middlewares (auth) live in git; shadows the host's old dynamic/routes.yml
+      - ./traefik/dynamic:/etc/traefik/dynamic:ro
     restart: unless-stopped
 
   coredns:
@@ -66,6 +68,13 @@ services:
   beszel:
     image: henrygd/beszel:0.21.2
     container_name: beszel
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy
+      - traefik.http.routers.beszel.rule=Host(`beszel.lbanks.dev`)
+      - traefik.http.routers.beszel.entrypoints=websecure
+      - traefik.http.routers.beszel.tls=true
+      - traefik.http.services.beszel.loadbalancer.server.port=8090
     ports:
       - "8090:8090"
     env_file:
@@ -99,6 +108,15 @@ services:
   pocket-id:
     image: ghcr.io/pocket-id/pocket-id:v2.19.3
     container_name: pocket-id
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy
+      - traefik.http.routers.pocket-id.rule=Host(`id.lbanks.dev`)
+      - traefik.http.routers.pocket-id.entrypoints=websecure
+      - traefik.http.routers.pocket-id.tls.certresolver=cloudflare
+      - traefik.http.routers.pocket-id.tls.domains[0].main=lbanks.dev
+      - traefik.http.routers.pocket-id.tls.domains[0].sans=*.lbanks.dev
+      - traefik.http.services.pocket-id.loadbalancer.server.port=1411
     env_file:
       - /home/lach/configs/pocket-id/.env
     volumes:
@@ -126,6 +144,13 @@ services:
   oauth2-proxy:
     image: quay.io/oauth2-proxy/oauth2-proxy:v7.15.6
     container_name: oauth2-proxy
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy
+      - traefik.http.routers.oauth2-proxy.rule=Host(`oauth.lbanks.dev`)
+      - traefik.http.routers.oauth2-proxy.entrypoints=websecure
+      - traefik.http.routers.oauth2-proxy.tls=true
+      - traefik.http.services.oauth2-proxy.loadbalancer.server.port=4180
     env_file:
       - /home/lach/configs/oauth2-proxy/.env
     ports:
@@ -139,6 +164,15 @@ services:
   backrest:
     image: garethgeorge/backrest:v1.14.1
     container_name: backrest
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy
+      - traefik.http.routers.backrest.rule=Host(`backrest.sour.lbanks.dev`)
+      - traefik.http.routers.backrest.entrypoints=websecure
+      - traefik.http.routers.backrest.tls.certresolver=cloudflare
+      - traefik.http.routers.backrest.tls.domains[0].main=lbanks.dev
+      - traefik.http.routers.backrest.tls.domains[0].sans=*.lbanks.dev,*.sour.lbanks.dev
+      - traefik.http.services.backrest.loadbalancer.server.port=9898
     env_file:
       - /home/lach/configs/backrest/.env
     ports:
@@ -154,6 +188,15 @@ services:
   ntfy:
     image: binwiederhier/ntfy:v2.38.1
     container_name: ntfy
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy
+      - traefik.http.routers.ntfy.rule=Host(`ntfy.sour.lbanks.dev`)
+      - traefik.http.routers.ntfy.entrypoints=websecure
+      - traefik.http.routers.ntfy.tls.certresolver=cloudflare
+      - traefik.http.routers.ntfy.tls.domains[0].main=lbanks.dev
+      - traefik.http.routers.ntfy.tls.domains[0].sans=*.lbanks.dev,*.sour.lbanks.dev
+      - traefik.http.services.ntfy.loadbalancer.server.port=80
     command: serve
     # Tailnet-only: lets the other host (and Beszel) publish without DNS/Traefik.
     ports:
