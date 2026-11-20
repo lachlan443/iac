@@ -176,6 +176,8 @@ services:
       - /home/lach/configs/cleanuparr/.env
     volumes:
       - /home/lach/configs/cleanuparr:/config
+      # Same path as SABnzbd so Orphaned Files can scan /data/usenet/incomplete
+      - /data/usenet:/data/usenet:rw
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:11011/health"]
       interval: 30s
