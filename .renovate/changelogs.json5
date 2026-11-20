@@ -100,10 +100,6 @@
       sourceUrl: "https://github.com/redis/redis",
     },
     {
-      matchPackageNames: ["lscr.io/linuxserver/code-server"],
-      sourceUrl: "https://github.com/coder/code-server",
-    },
-    {
       description: "No GitHub releases; Renovate falls back to ChangeLog.md",
       matchPackageNames: ["lscr.io/linuxserver/znc"],
       sourceUrl: "https://github.com/znc/znc",
