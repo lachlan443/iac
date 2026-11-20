@@ -178,7 +178,9 @@ services:
     restart: unless-stopped
 
   recyclarr:
-    image: ghcr.io/recyclarr/recyclarr:8.8.1
+    # Recyclarr 9 runs as a server (built-in schedule + /livez health check on 7983).
+    # Needs RECYCLARR_API_KEY (>=32 chars) in /home/lach/configs/recyclarr/.env.
+    image: ghcr.io/recyclarr/recyclarr:9
     container_name: recyclarr
     user: 1000:1000
     networks:
