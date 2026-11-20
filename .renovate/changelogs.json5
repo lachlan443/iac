@@ -104,5 +104,15 @@
       matchPackageNames: ["lscr.io/linuxserver/znc"],
       sourceUrl: "https://github.com/znc/znc",
     },
+    {
+      description: "Seafile moved its changelog off GitHub to a wiki Renovate can't fetch; link it from the PR",
+      matchPackageNames: ["seafileltd/**"],
+      changelogUrl: "https://plus.seafile.com/wiki/publish/seafile-wiki/5L80/",
+    },
+    {
+      description: "Image tags are 4-part (10.0.0.1) but CHANGELOG.md/release tags are 3-part, and extractVersion breaks update lookup (tested); link the changelog instead",
+      matchPackageNames: ["onlyoffice/documentserver"],
+      changelogUrl: "https://github.com/ONLYOFFICE/DocumentServer/blob/master/CHANGELOG.md",
+    },
   ],
 }
