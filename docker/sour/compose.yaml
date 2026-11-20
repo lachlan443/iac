@@ -27,25 +27,6 @@ services:
       - /home/lach/configs/coredns:/etc/coredns
     restart: unless-stopped
 
-  code-server:
-    image: lscr.io/linuxserver/code-server:4.133.0
-    container_name: code-server
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Australia/Sydney
-      - DEFAULT_WORKSPACE=/workspace
-      - PWA_APPNAME=code-server
-    volumes:
-      - /home/lach/configs/code:/config
-      - /home/lach:/workspace
-    networks:
-      - proxy
-    restart: unless-stopped
-
-
-
-
   beszel-agent:
     image: henrygd/beszel-agent:0.21.2-alpine
     container_name: beszel-agent
