@@ -7,6 +7,9 @@ services:
     networks:
       - proxy
       - media
+      - socket-proxy
+    depends_on:
+      - docker-socket-proxy
     ports:
       - "80:80"
       - "443:443"
@@ -16,13 +19,32 @@ services:
       - /home/lach/configs/traefik:/etc/traefik
     restart: unless-stopped
 
+  # Read-only Docker API for Traefik's Docker provider and the Beszel agent.
+  # Only GET /containers, /events, /version, /_ping are allowed; POST (create/start/exec/delete) is denied.
+  # Lives on its own network so only Traefik can reach it; port bound to localhost for the host-networked beszel-agent.
+  docker-socket-proxy:
+    image: tecnativa/docker-socket-proxy:3.4
+    container_name: docker-socket-proxy
+    environment:
+      CONTAINERS: 1
+    ports:
+      - "127.0.0.1:2375:2375"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - socket-proxy
+    restart: unless-stopped
+
   beszel-agent:
     image: henrygd/beszel-agent:0.21.2-alpine
     container_name: beszel-agent
     restart: unless-stopped
     network_mode: host
+    environment:
+      DOCKER_HOST: tcp://127.0.0.1:2375
+    depends_on:
+      - docker-socket-proxy
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
       - /home/lach/configs/beszel-agent:/var/lib/beszel-agent
       - /data/.beszel:/extra-filesystems/sda1__Media:ro
     devices:
@@ -77,6 +99,14 @@ services:
     container_name: habits
     networks:
       - proxy
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy
+      - traefik.http.routers.habits.rule=Host(`habits.lbanks.dev`)
+      - traefik.http.routers.habits.entrypoints=websecure
+      - traefik.http.routers.habits.tls=true
+      - traefik.http.routers.habits.middlewares=auth@file
+      - traefik.http.services.habits.loadbalancer.server.port=7160
     volumes:
       - /home/lach/configs/habits:/config
     restart: unless-stopped
@@ -118,6 +148,8 @@ services:
       start_period: 40s
 
 networks:
+  socket-proxy:
+    name: socket-proxy
   proxy:
     name: proxy
   media:
