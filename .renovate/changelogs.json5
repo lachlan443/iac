@@ -42,9 +42,11 @@
       sourceUrl: "https://github.com/portainer/portainer",
     },
     {
+      description: "Upstream tags are 4-part (v7.0.3.10918), image tags are 3-part; map both to x.y.z so release notes match",
       matchPackageNames: ["lscr.io/linuxserver/radarr"],
       sourceUrl: "https://github.com/Radarr/Radarr",
       changelogUrl: "https://github.com/Radarr/Radarr/releases",
+      extractVersion: "^(?<version>\\d+\\.\\d+\\.\\d+)$|^v(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)\\.\\d+$",
     },
     {
       matchPackageNames: ["lscr.io/linuxserver/plex"],
@@ -52,14 +54,18 @@
       changelogUrl: "https://github.com/linuxserver/docker-plex/releases",
     },
     {
+      description: "Upstream tags are 4-part (v7.0.3.10918), image tags are 3-part; map both to x.y.z so release notes match",
       matchPackageNames: ["lscr.io/linuxserver/sonarr"],
       sourceUrl: "https://github.com/Sonarr/Sonarr",
       changelogUrl: "https://github.com/Sonarr/Sonarr/releases",
+      extractVersion: "^(?<version>\\d+\\.\\d+\\.\\d+)$|^v(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)\\.\\d+$",
     },
     {
+      description: "Upstream tags are 4-part (v7.0.3.10918), image tags are 3-part; map both to x.y.z so release notes match",
       matchPackageNames: ["lscr.io/linuxserver/prowlarr"],
       sourceUrl: "https://github.com/Prowlarr/Prowlarr",
       changelogUrl: "https://github.com/Prowlarr/Prowlarr/releases",
+      extractVersion: "^(?<version>\\d+\\.\\d+\\.\\d+)$|^v(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)\\.\\d+$",
     },
     {
       matchPackageNames: ["lscr.io/linuxserver/sabnzbd"],
@@ -67,9 +73,11 @@
       changelogUrl: "https://github.com/sabnzbd/sabnzbd/releases",
     },
     {
+      description: "Release notes live upstream, tagged release-x.y.z",
       matchPackageNames: ["lscr.io/linuxserver/qbittorrent"],
-      sourceUrl: "https://github.com/linuxserver/docker-qbittorrent",
-      changelogUrl: "https://github.com/linuxserver/docker-qbittorrent/releases",
+      sourceUrl: "https://github.com/qbittorrent/qBittorrent",
+      changelogUrl: "https://github.com/qbittorrent/qBittorrent/releases",
+      extractVersion: "^(?<version>\\d+\\.\\d+\\.\\d+)$|^release-(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$",
     },
     {
       matchPackageNames: ["traefik"],
@@ -84,6 +92,21 @@
     {
       matchPackageNames: ["lachlan443/backblaze-backup"],
       sourceUrl: "https://github.com/lachlan443/backblaze-backup",
+    },
+    {
+      description: "Auto-detected source is docker-library-redis, which has empty releases",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["redis"],
+      sourceUrl: "https://github.com/redis/redis",
+    },
+    {
+      matchPackageNames: ["lscr.io/linuxserver/code-server"],
+      sourceUrl: "https://github.com/coder/code-server",
+    },
+    {
+      description: "No GitHub releases; Renovate falls back to ChangeLog.md",
+      matchPackageNames: ["lscr.io/linuxserver/znc"],
+      sourceUrl: "https://github.com/znc/znc",
     },
   ],
 }
