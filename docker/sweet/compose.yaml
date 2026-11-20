@@ -7,6 +7,9 @@ services:
     networks:
       - proxy
       - media
+      - socket-proxy
+    depends_on:
+      - docker-socket-proxy
     ports:
       - "80:80"
       - "443:443"
@@ -16,19 +19,20 @@ services:
       - /home/lach/configs/traefik:/etc/traefik
     restart: unless-stopped
 
-  # Read-only Docker API for Traefik's Docker provider (labels). Only lists containers.
+  # Read-only Docker API for Traefik's Docker provider and the Beszel agent.
+  # Only GET /containers, /events, /version, /_ping are allowed; POST (create/start/exec/delete) is denied.
+  # Lives on its own network so only Traefik can reach it; port bound to localhost for the host-networked beszel-agent.
   docker-socket-proxy:
     image: tecnativa/docker-socket-proxy:3.4
     container_name: docker-socket-proxy
     environment:
       CONTAINERS: 1
     ports:
-      # localhost only, for the host-networked beszel-agent
       - "127.0.0.1:2375:2375"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     networks:
-      - proxy
+      - socket-proxy
     restart: unless-stopped
 
   beszel-agent:
@@ -100,6 +104,7 @@ services:
       - traefik.docker.network=proxy
       - traefik.http.routers.habits.rule=Host(`habits.lbanks.dev`)
       - traefik.http.routers.habits.entrypoints=websecure
+      - traefik.http.routers.habits.tls=true
       - traefik.http.routers.habits.middlewares=auth@file
       - traefik.http.services.habits.loadbalancer.server.port=7160
     volumes:
@@ -143,6 +148,8 @@ services:
       start_period: 40s
 
 networks:
+  socket-proxy:
+    name: socket-proxy
   proxy:
     name: proxy
   media:
