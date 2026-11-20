@@ -187,6 +187,15 @@ services:
       - /home/lach/configs/recyclarr/.env
     volumes:
       - /home/lach/configs/recyclarr:/config
+    # 8.x has no built-in health check (the /livez one is in the unreleased server
+    # version). It runs supercronic for the daily sync, so check the scheduler is up.
+    # Drop this once the image ships its own health check.
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep supercronic >/dev/null"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
     restart: unless-stopped
 
   kometa:
