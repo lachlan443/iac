@@ -122,7 +122,7 @@ services:
       - proxy
 
   ntfy:
-    image: binwiederhier/ntfy:v2.11.0
+    image: binwiederhier/ntfy:v2.38.1
     container_name: ntfy
     command: serve
     environment:
