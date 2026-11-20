@@ -36,6 +36,13 @@ services:
   seafile:
     image: seafileltd/seafile-mc:13.0.30
     container_name: seafile
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy
+      - traefik.http.routers.seafile.rule=Host(`files.lbanks.dev`)
+      - traefik.http.routers.seafile.entrypoints=websecure
+      - traefik.http.routers.seafile.tls=true
+      - traefik.http.services.seafile.loadbalancer.server.port=80
     env_file:
       - /home/lach/configs/seafile/.env
     environment:
@@ -79,6 +86,15 @@ services:
   notification-server:
     image: seafileltd/notification-server:13.0.29
     container_name: notification-server
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy
+      - traefik.http.routers.seafile-notification.rule=Host(`files.lbanks.dev`) && PathPrefix(`/notification`)
+      - traefik.http.routers.seafile-notification.entrypoints=websecure
+      - traefik.http.routers.seafile-notification.tls=true
+      - traefik.http.routers.seafile-notification.middlewares=seafile-notification-strip
+      - traefik.http.services.seafile-notification.loadbalancer.server.port=8083
+      - traefik.http.middlewares.seafile-notification-strip.stripprefix.prefixes=/notification
     env_file:
       - /home/lach/configs/seafile/.env
     environment:
@@ -133,6 +149,19 @@ services:
   thumbnail-server:
     image: seafileltd/thumbnail-server:13.0.29
     container_name: thumbnail-server
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy
+      - traefik.http.routers.seafile-thumbnail.rule=Host(`files.lbanks.dev`) && PathPrefix(`/thumbnail`)
+      - traefik.http.routers.seafile-thumbnail.entrypoints=websecure
+      - traefik.http.routers.seafile-thumbnail.tls=true
+      - traefik.http.services.seafile-thumbnail.loadbalancer.server.port=80
+      - traefik.http.routers.seafile-thumbnail-ping.rule=Host(`files.lbanks.dev`) && Path(`/thumbnail/ping`)
+      - traefik.http.routers.seafile-thumbnail-ping.entrypoints=websecure
+      - traefik.http.routers.seafile-thumbnail-ping.tls=true
+      - traefik.http.routers.seafile-thumbnail-ping.middlewares=seafile-thumbnail-ping
+      - traefik.http.routers.seafile-thumbnail-ping.service=seafile-thumbnail
+      - traefik.http.middlewares.seafile-thumbnail-ping.replacepath.path=/ping
     env_file:
       - /home/lach/configs/seafile/.env
     environment:
@@ -162,6 +191,13 @@ services:
   onlyoffice:
     image: onlyoffice/documentserver:9.4.0.1
     container_name: seafile-onlyoffice
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy
+      - traefik.http.routers.office.rule=Host(`office.lbanks.dev`)
+      - traefik.http.routers.office.entrypoints=websecure
+      - traefik.http.routers.office.tls=true
+      - traefik.http.services.seafile-onlyoffice.loadbalancer.server.port=80
     env_file:
       - /home/lach/configs/seafile/.env
     environment:

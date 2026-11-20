@@ -30,6 +30,13 @@ services:
   webserver:
     image: ghcr.io/paperless-ngx/paperless-ngx:3.5.1
     container_name: paperless
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy
+      - traefik.http.routers.paperless.rule=Host(`docs.lbanks.dev`)
+      - traefik.http.routers.paperless.entrypoints=websecure
+      - traefik.http.routers.paperless.tls=true
+      - traefik.http.services.paperless.loadbalancer.server.port=8000
     env_file:
       - /home/lach/configs/paperless/.env
     environment:

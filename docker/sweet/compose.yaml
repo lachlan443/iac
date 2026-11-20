@@ -13,10 +13,15 @@ services:
     ports:
       - "80:80"
       - "443:443"
+    extra_hosts:
+      # Plex is host-networked, so Traefik reaches it through the host gateway
+      - host.docker.internal:host-gateway
     env_file:
       - /home/lach/configs/traefik/.env
     volumes:
       - /home/lach/configs/traefik:/etc/traefik
+      # Shared middlewares (auth) live in git; shadows the host's old dynamic/routes.yml
+      - ./traefik/dynamic:/etc/traefik/dynamic:ro
     restart: unless-stopped
 
   # Read-only Docker API for Traefik's Docker provider and the Beszel agent.
@@ -60,6 +65,14 @@ services:
   homeassistant:
     image: ghcr.io/home-assistant/home-assistant:2026.11.2
     container_name: homeassistant
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy
+      - traefik.http.routers.homeassistant.rule=Host(`hassio.lbanks.dev`)
+      - traefik.http.routers.homeassistant.entrypoints=websecure
+      - traefik.http.routers.homeassistant.tls=true
+      - traefik.http.routers.homeassistant.middlewares=auth@file
+      - traefik.http.services.homeassistant.loadbalancer.server.port=8123
     networks:
       - media
       - proxy
@@ -72,6 +85,16 @@ services:
   backrest:
     image: garethgeorge/backrest:v1.14.1
     container_name: backrest
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy
+      - traefik.http.routers.backrest.rule=Host(`backrest.sweet.lbanks.dev`)
+      - traefik.http.routers.backrest.entrypoints=websecure
+      - traefik.http.routers.backrest.tls.certresolver=cloudflare
+      - traefik.http.routers.backrest.tls.domains[0].main=lbanks.dev
+      - traefik.http.routers.backrest.tls.domains[0].sans=*.lbanks.dev,*.sweet.lbanks.dev
+      - traefik.http.routers.backrest.middlewares=auth@file
+      - traefik.http.services.backrest.loadbalancer.server.port=9898
     env_file:
       - /home/lach/configs/backrest/data/.env
     ports:
@@ -114,6 +137,15 @@ services:
   trilium:
     image: triliumnext/trilium:v0.107.0
     container_name: trilium
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy
+      - traefik.http.routers.trilium.rule=Host(`notes.lbanks.dev`)
+      - traefik.http.routers.trilium.entrypoints=websecure
+      - traefik.http.routers.trilium.tls.certresolver=cloudflare
+      - traefik.http.routers.trilium.tls.domains[0].main=lbanks.dev
+      - traefik.http.routers.trilium.tls.domains[0].sans=*.lbanks.dev
+      - traefik.http.services.trilium.loadbalancer.server.port=8080
     restart: unless-stopped
     environment:
       # Needed for the TODO Board ticket-numbering backend script (~runOnChildNoteCreation)
@@ -130,6 +162,15 @@ services:
   ntfy:
     image: binwiederhier/ntfy:v2.38.1
     container_name: ntfy
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy
+      - traefik.http.routers.ntfy.rule=Host(`ntfy.sweet.lbanks.dev`)
+      - traefik.http.routers.ntfy.entrypoints=websecure
+      - traefik.http.routers.ntfy.tls.certresolver=cloudflare
+      - traefik.http.routers.ntfy.tls.domains[0].main=lbanks.dev
+      - traefik.http.routers.ntfy.tls.domains[0].sans=*.lbanks.dev,*.sweet.lbanks.dev
+      - traefik.http.services.ntfy.loadbalancer.server.port=80
     command: serve
     # Tailnet-only: lets the other host (and Beszel) publish without DNS/Traefik.
     ports:
