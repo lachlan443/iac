@@ -7,5 +7,45 @@
       matchPackageNames: ["henrygd/beszel", "henrygd/beszel-agent"],
       groupName: "beszel",
     },
+
+    // Multi-container stacks: one PR per stack (Renovate still splits majors into their own PR).
+    {
+      description: "Immich stack (server, ML, valkey, postgres)",
+      matchFileNames: ["docker/sweet/immich/compose.yaml"],
+      groupName: "immich stack",
+      groupSlug: "immich-stack",
+    },
+    {
+      description: "Immich's release compose pins the postgres image (currently 14-vectorchord0.4.3). Only change it when https://github.com/immich-app/immich/releases/latest/download/docker-compose.yml does; a major needs a DB migration.",
+      matchFileNames: ["docker/sweet/immich/compose.yaml"],
+      matchPackageNames: ["ghcr.io/immich-app/postgres"],
+      matchUpdateTypes: ["major"],
+      enabled: false,
+    },
+    {
+      description: "Seafile stack (seafile-mc, notification, md, thumbnail, onlyoffice, mariadb, redis)",
+      matchFileNames: ["docker/sweet/seafile/compose.yaml"],
+      groupName: "seafile stack",
+      groupSlug: "seafile-stack",
+    },
+    {
+      description: "Seafile 13 and 14 both ship mariadb:10.11 (haiwen/seafile-admin-docs manual/repo/docker/ce/seafile-server.yml)",
+      matchFileNames: ["docker/sweet/seafile/compose.yaml"],
+      matchPackageNames: ["mariadb"],
+      allowedVersions: "<10.12",
+    },
+    {
+      description: "Paperless stack (paperless-ngx, valkey, postgres)",
+      matchFileNames: ["docker/sweet/paperless/compose.yaml"],
+      groupName: "paperless stack",
+      groupSlug: "paperless-stack",
+    },
+    {
+      description: "Paperless reference compose pins postgres:18 (paperless-ngx docker/compose/docker-compose.postgres.yml); a major needs pg_upgrade",
+      matchFileNames: ["docker/sweet/paperless/compose.yaml"],
+      matchPackageNames: ["postgres"],
+      matchUpdateTypes: ["major"],
+      enabled: false,
+    },
   ],
 }
