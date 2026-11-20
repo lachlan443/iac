@@ -45,10 +45,10 @@
       "enabled": false
     },
     {
-      "description": "qbittorrent - only track plain semver tags, ignore Ubuntu base image tags",
+      "description": "qbittorrent - only track plain semver tags with a single-digit major; old linuxserver tags like 14.3.9 and 20.04.1 look like semver but are not qBittorrent versions",
       "matchDatasources": ["docker"],
       "matchPackageNames": ["lscr.io/linuxserver/qbittorrent"],
-      "allowedVersions": "/^\\d+\\.\\d+\\.\\d+$/"
+      "allowedVersions": "/^[1-9]\\.\\d+\\.\\d+$/"
     }
   ]
 }
