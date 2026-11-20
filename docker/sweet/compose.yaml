@@ -131,6 +131,9 @@ services:
     image: binwiederhier/ntfy:v2.38.1
     container_name: ntfy
     command: serve
+    # Tailnet-only: lets the other host (and Beszel) publish without DNS/Traefik.
+    ports:
+      - "100.111.195.102:8081:80"
     environment:
       - TZ=Australia/Sydney
     volumes:
