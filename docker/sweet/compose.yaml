@@ -214,6 +214,7 @@ services:
       FTLCONF_dns_upstreams: "1.1.1.1;1.0.0.1"
       FTLCONF_misc_dnsmasq_lines: "server=/lbanks.dev/100.77.186.107"
       FTLCONF_webserver_api_password: ""
+      FTLCONF_webserver_domain: pihole.lbanks.dev
     volumes:
       - /home/lach/configs/pihole:/etc/pihole
     networks:
