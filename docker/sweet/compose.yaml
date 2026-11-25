@@ -191,6 +191,35 @@ services:
       retries: 3
       start_period: 40s
 
+  # DNS filter for the Apple TV only. It is reachable on the tailnet IP and not published anywhere else.
+  # lbanks.dev is forwarded to CoreDNS on sour so CoreDNS stays the source of truth for our names.
+  # The web UI is behind SSO, so the Pi-hole login is disabled (empty password).
+  pihole:
+    image: pihole/pihole:2026.11.0
+    container_name: pihole
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=proxy
+      - traefik.http.routers.pihole.rule=Host(`pihole.lbanks.dev`)
+      - traefik.http.routers.pihole.entrypoints=websecure
+      - traefik.http.routers.pihole.tls=true
+      - traefik.http.routers.pihole.middlewares=auth@file
+      - traefik.http.services.pihole.loadbalancer.server.port=80
+    ports:
+      - "100.111.195.102:53:53/tcp"
+      - "100.111.195.102:53:53/udp"
+    environment:
+      TZ: Australia/Sydney
+      FTLCONF_dns_listeningMode: ALL
+      FTLCONF_dns_upstreams: "1.1.1.1;1.0.0.1"
+      FTLCONF_misc_dnsmasq_lines: "server=/lbanks.dev/100.77.186.107"
+      FTLCONF_webserver_api_password: ""
+    volumes:
+      - /home/lach/configs/pihole:/etc/pihole
+    networks:
+      - proxy
+    restart: unless-stopped
+
 networks:
   socket-proxy:
     name: socket-proxy
