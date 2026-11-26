@@ -34,7 +34,7 @@ services:
     restart: unless-stopped
 
   seafile:
-    image: seafileltd/seafile-mc:13.0.30
+    image: seafileltd/seafile-mc:14.0.11
     container_name: seafile
     labels:
       - traefik.enable=true
@@ -84,7 +84,7 @@ services:
       start_period: 10s
 
   notification-server:
-    image: seafileltd/notification-server:13.0.29
+    image: seafileltd/notification-server:14.0.11
     container_name: notification-server
     labels:
       - traefik.enable=true
@@ -118,7 +118,7 @@ services:
     restart: always
 
   seafile-md-server:
-    image: seafileltd/seafile-md-server:13.0.28
+    image: seafileltd/seafile-md-server:14.0.11
     container_name: seafile-md-server
     env_file:
       - /home/lach/configs/seafile/.env
@@ -147,7 +147,7 @@ services:
     restart: unless-stopped
 
   thumbnail-server:
-    image: seafileltd/thumbnail-server:13.0.29
+    image: seafileltd/thumbnail-server:14.0.11
     container_name: thumbnail-server
     labels:
       - traefik.enable=true
@@ -189,7 +189,7 @@ services:
     restart: always
 
   onlyoffice:
-    image: onlyoffice/documentserver:9.4.0.1
+    image: onlyoffice/documentserver:10.0.0.1
     container_name: seafile-onlyoffice
     labels:
       - traefik.enable=true
