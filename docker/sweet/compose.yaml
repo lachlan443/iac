@@ -63,7 +63,7 @@ services:
       - /home/lach/configs/beszel-agent/.env
 
   homeassistant:
-    image: ghcr.io/home-assistant/home-assistant:2026.11.2
+    image: ghcr.io/home-assistant/home-assistant:2026.11.3
     container_name: homeassistant
     labels:
       - traefik.enable=true
