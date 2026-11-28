@@ -9,7 +9,7 @@ name: paperless
 
 services:
   broker:
-    image: valkey/valkey:9.2.0-alpine
+    image: valkey/valkey:9.2.1-alpine
     container_name: paperless-redis
     volumes:
       - /home/lach/configs/paperless/redis:/data
