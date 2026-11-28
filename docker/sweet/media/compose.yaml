@@ -111,7 +111,7 @@ services:
       - /home/lach/configs/autobrr:/config
 
   qui:
-    image: ghcr.io/autobrr/qui:v1.36.1
+    image: ghcr.io/autobrr/qui:v1.37.0
     container_name: qui
     labels:
       - traefik.enable=true
