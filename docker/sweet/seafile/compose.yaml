@@ -10,7 +10,7 @@ name: seafile
 
 services:
   db:
-    image: mariadb:10.11.19
+    image: mariadb:10.11.20
     container_name: seafile-mysql
     env_file:
       - /home/lach/configs/seafile/.env
@@ -28,7 +28,7 @@ services:
       retries: 10
 
   redis:
-    image: redis:8.10.3-alpine
+    image: redis:8.12.0-alpine
     container_name: seafile-redis
     command: redis-server --save "" --appendonly no
     restart: unless-stopped
